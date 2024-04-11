@@ -1,6 +1,8 @@
 import type { Config } from 'tailwindcss';
+import daisyui from 'daisyui'
 
 const config: Config = {
+  
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -12,11 +14,11 @@ const config: Config = {
         '13': 'repeat(13, minmax(0, 1fr))',
       },
       colors: {
-        blue: {
-          400: '#2589FE',
-          500: '#0070F3',
-          600: '#2F6FEB',
-        },
+        "primary": "#691883",
+        "secondary": "#b148d2",
+        "accent": "#c1246b",
+        "neutral": "(243,204,255)",
+        "base": "#f6f3fd",
       },
     },
     keyframes: {
@@ -27,6 +29,13 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [require('@tailwindcss/forms'), daisyui],
+  daisyui: {
+    themes: [
+       "dark", 
+       "cupcake"
+    ],
+  },
+  
 };
 export default config;

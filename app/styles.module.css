@@ -1,0 +1,7 @@
+.bgImage {
+  background-image: url('../public/pattern-randomized-2.svg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: #f6f3fd;
+}
