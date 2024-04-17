@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  UserGroupIcon,
   HomeIcon,
   TableCellsIcon,
   ArrowsRightLeftIcon,
@@ -18,14 +17,13 @@ import clsx from 'clsx';
 // Depending on the size of the application, this would be stored in a database.
 const links1 = [
   { name: 'Home', href: '/dashboard',  baseHref: "/dashboard/404", icon: HomeIcon },
-  /* { name: 'Invoices', href: '/dashboard/invoices', icon: DocumentDuplicateIcon,},
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon }, */
   { name: 'Your Offers', href: '/dashboard/offers', baseHref: "/dashboard/offers", icon: TableCellsIcon },
+  { name: 'MarketPlace', href: '/dashboard/market/merchant', baseHref: "/dashboard/market", icon: ArrowsPointingInIcon },
   { name: 'Trades', href: '/dashboard/trades', baseHref: "/dashboard/trades", icon: ArrowsRightLeftIcon },
   { name: 'Escrows', href: '/dashboard/escrows', baseHref: "/dashboard/escrows", icon: FolderMinusIcon },
   { name: 'Transactions', href: '/dashboard/transactions', baseHref: "/dashboard/transactions", icon: ArrowsUpDownIcon },
   { name: 'Bank Accounts', href: '/dashboard/bankAccounts', baseHref: "/dashboard/bankAccounts", icon: BanknotesIcon },
-  { name: 'MarketPlace', href: '/dashboard/market/merchant', baseHref: "/dashboard/market", icon: ArrowsPointingInIcon },
+  
 ];
 
 export default function NavLinks() {

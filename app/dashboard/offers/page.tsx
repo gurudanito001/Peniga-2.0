@@ -4,6 +4,8 @@ import WalletCard from '@/app/ui/dashboard/walletCard';
 import Tabs from '@/app/ui/dashboard/tabs';
 import {TransactionCard} from '@/app/ui/listItems';
 import { ArrowLongRightIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import CreateOfferModal from './createOfferModal';
+import { OffersListItem } from '@/app/ui/listItems';
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -16,17 +18,23 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
-        <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
-          Your Offers
-        </h1>
-        <header className='flex items-center'>
+      <div className='flex flex-col grow h-auto overflow-hidden'>
+        
+        
+        <header>
+          <div className='flex items-center mb-4'>
+            <h1 className={`${lusitana.className} mb-0 text-base-content text-2xl font-bold`}>
+              Your Offers
+            </h1>
+            <CreateOfferModal />
+          </div>
+
           <Tabs tabItems={["all", "merchant", "seller"]} />
-          <button className='btn btn-sm btn-outline border-primary text-primary ml-auto text-xs'>+ Add New</button>
+
         </header>
        
 
-        <div className="flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
+        <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
           <table className="table">
             <thead>
               <tr>
@@ -59,7 +67,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/offers/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -80,7 +88,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/offers/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -101,7 +109,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/offers/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -122,7 +130,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/offers/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
 
@@ -132,24 +140,12 @@ export default async function Page() {
           </table>
         </div>
 
-
-
-        {/* <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
-      </div> */}
+        <ul className='mt-4 lg:hidden grow overflow-y-auto'>
+          <OffersListItem />
+        </ul>
       </div>
 
-      <div className="flex md:hidden grow flex-col text-sm overflow-y-auto pb-20">
+      {/* <div className="flex lg:hidden grow flex-col text-sm overflow-y-auto pb-20">
         <h1 className={`${lusitana.className} mb-4 text-base-content text-xl font-bold`}>
           Your Offers
         </h1>
@@ -164,7 +160,7 @@ export default async function Page() {
           <TransactionCard />
           <TransactionCard />
         </ul>
-      </div>
+      </div> */}
     </>
 
 

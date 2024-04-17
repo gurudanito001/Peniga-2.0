@@ -6,7 +6,7 @@ import { lusitana } from '@/app/ui/fonts';
 
 const WalletCard = () => {
   return (
-    <section className='my-4'>
+    <section className='mt-4 mb-6'>
       <div className="card w-100 max-w-sm bg-primary glass text-base-300 shadow-lg">
         <div className="card-body flex flex-row items-start ">
           <div className=''>

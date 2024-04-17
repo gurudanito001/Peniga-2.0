@@ -17,7 +17,7 @@ const config: Config = {
         "primary": "#691883",
         "secondary": "#b148d2",
         "accent": "#c1246b",
-        "neutral": "(243,204,255)",
+        "neutral": "#ffffff9e",
         "base": "#f6f3fd",
       },
     },
@@ -32,8 +32,8 @@ const config: Config = {
   plugins: [require('@tailwindcss/forms'), daisyui],
   daisyui: {
     themes: [
+      "cupcake",
        "dark", 
-       "cupcake"
     ],
   },
   

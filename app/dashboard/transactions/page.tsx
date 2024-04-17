@@ -75,7 +75,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/transactions/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -117,7 +117,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/transactions/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -159,7 +159,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/transactions/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -201,7 +201,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/transactions/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
             </tbody>

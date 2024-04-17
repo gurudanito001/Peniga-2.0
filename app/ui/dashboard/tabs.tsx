@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Link from "next/link";
 
 
 type TabProps = {
@@ -27,18 +28,18 @@ const Tabs = ({tabItems}: TabProps) => {
     }
   },[])
   return (
-    <section className='flex flex-col rounded-xl py-3' style={{width: "400px"}}>
-      <div role="tablist" className="tabs tabs-lifted">
+    <section className='flex flex-col rounded-xl py-3 border-none' style={{width: "350px"}}>
+      <div role="tablist" className="tabs tabs-lifted border-none">
         {tabItems?.map(item => {
-          return(<a key={item} role="tab" href={createTabURL(item)} className={clsx(
-            'tab px-14 text-xs font-bold uppercase min-[300px]',
+          return(<Link key={item} role="tab" href={createTabURL(item)} className={clsx(
+            'tab px-14 text-xs uppercase border-none',
             {
-              'tab-active [--tab-bg:#f6f3fd] opacity-75 [--tab-border-color:#691883] text-primary': item === activeTab,
+              ' text-primary font-bold': item === activeTab,
               'text-base-content': item !== activeTab
             },
           )}
           
-          >{item}</a>)
+          >{item}</Link>)
         })}
       </div>
     </section>

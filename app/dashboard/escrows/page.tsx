@@ -17,7 +17,7 @@ export default async function Page() {
   return (
     <>
       <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
-        <h1 className={`mb-4 text-base-content text-2xl font-bold`}>
+        <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
           Escrows
         </h1>
 

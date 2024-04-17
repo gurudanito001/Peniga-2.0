@@ -2,7 +2,7 @@
 import { lusitana } from '@/app/ui/fonts';
 import WalletCard from '@/app/ui/dashboard/walletCard';
 import Tabs from '@/app/ui/dashboard/tabs';
-import {TradesCard} from '@/app/ui/listItems';
+import {MarketListItem} from '@/app/ui/listItems';
 import { ArrowLongRightIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
 import { Metadata } from 'next';
@@ -16,24 +16,25 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
-        <h1 className={`mb-4 text-base-content text-2xl font-bold`}>
+      <div className='flex flex-col'>
+        <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
           Merchant MarketPlace
         </h1>
 
-        <section className='mt-4 flex flex-col rounded-xl pt-5 pb-3 max-w-xs'>
-          <div role="tablist" className="tabs tabs-lifted">
-            <Link role="tab" href="/dashboard/market/merchant" 
-            className={`tab text-xs font-bold uppercase tab-active [--tab-bg:#f6f3fd] opacity-75 [--tab-border-color:#691883] text-primary`}>
+        <section className='flex flex-col rounded-xl py-3' style={{ width: "350px" }}>
+          <div role="tablist" className="tabs tabs-lifted border-none">
+            <Link role="tab" href="/dashboard/market/merchant"
+              className={`tab text-xs uppercase border-none text-primary font-bold`}>
               Merchant
             </Link>
-            <Link role="tab" href="/dashboard/market/seller" 
-            className={`tab text-xs font-bold uppercase text-base-content`}>
+            <Link role="tab" href="/dashboard/market/seller"
+              className={`tab text-xs uppercase border-none text-base-content`}>
               Seller
             </Link>
           </div>
         </section>
-        <div className="flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
+
+        <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
           <table className="table">
             <thead>
               <tr>
@@ -68,7 +69,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <button className="btn btn-outline btn-sm px-5 rounded-lg border-none bg-accent shadow-lg text-white hover:bg-accent hover:text-white hover:border-none hover:shadow-none ">Sell </button>
                 </td>
               </tr>
             </tbody>
@@ -76,33 +77,12 @@ export default async function Page() {
           </table>
         </div>
 
-
-
-        {/* <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
-      </div> */}
-      </div>
-
-      <div className="flex md:hidden grow flex-col text-sm overflow-y-auto pb-20">
-        <h1 className={`${lusitana.className} mb-4 text-base-content text-xl font-bold`}>
-          Escrows
-        </h1>
-        <ul className='mt-4 grow overflow-y-auto'>
-          <TradesCard />
-          <TradesCard />
-          <TradesCard />
-          <TradesCard />
-          
+        <ul className='lg:hidden mt-4 grow overflow-y-auto'>
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
         </ul>
       </div>
     </>

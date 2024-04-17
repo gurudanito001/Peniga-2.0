@@ -13,7 +13,7 @@ export default function SideNav() {
       >
         <h1 className='text-2xl text-base-content font-extrabold'>Peniga</h1>
       </Link>
-      <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2 text-sm">
+      <div className="flex grow justify-between flex-col space-x-0 space-y-2 text-sm">
         <NavLinks />
         
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>
