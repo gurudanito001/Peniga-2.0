@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function Page({params}: any) {
   return (
     <>
-      <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
+      <div className='flex flex-col grow h-full overflow-y-auto pb-20 lg:pb-0'>
         <header>
           <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
             View Transaction
@@ -88,16 +88,106 @@ export default async function Page({params}: any) {
                 <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
               </dd>
             </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Amount</dt>
+              <dd className={`${lusitana.className} text-base-content font-semibold ml-auto`}>₦850,000</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Category</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>Withdrawal</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Status</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
+              </dd>
+            </div>
+
+            <div className='flex items-center py-3'>
+              <dt className='font-medium text-base-content text-sm'>Date Created</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
+              </dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Amount</dt>
+              <dd className={`${lusitana.className} text-base-content font-semibold ml-auto`}>₦850,000</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Category</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>Withdrawal</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Status</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
+              </dd>
+            </div>
+
+            <div className='flex items-center py-3'>
+              <dt className='font-medium text-base-content text-sm'>Date Created</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
+              </dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Amount</dt>
+              <dd className={`${lusitana.className} text-base-content font-semibold ml-auto`}>₦850,000</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Category</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>Withdrawal</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Status</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
+              </dd>
+            </div>
+
+            <div className='flex items-center py-3'>
+              <dt className='font-medium text-base-content text-sm'>Date Created</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
+              </dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Amount</dt>
+              <dd className={`${lusitana.className} text-base-content font-semibold ml-auto`}>₦850,000</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Category</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>Withdrawal</dd>
+            </div>
+
+            <div className='flex items-center border-b py-3'>
+              <dt className='font-medium text-base-content text-sm'>Status</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
+              </dd>
+            </div>
+
+            <div className='flex items-center py-3'>
+              <dt className='font-medium text-base-content text-sm'>Date Created</dt>
+              <dd className={`text-base-content font-semibold ml-auto`}>
+                <p className="text-xs text-base-content opacity-60">Apr 7th, 2024 15:57:22</p>
+              </dd>
+            </div>
             
           </dl>
         </section>
         
-      </div>
-
-      <div className="flex md:hidden grow flex-col text-sm overflow-y-auto pb-20">
-        <h1 className={`${lusitana.className} mb-4 text-base-content text-xl font-bold`}>
-          Transactions
-        </h1>
       </div>
     </>
 

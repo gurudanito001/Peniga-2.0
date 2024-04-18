@@ -16,23 +16,27 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <div className=':flex flex-col grow h-auto overflow-hidden'>
-        <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
-          Seller MarketPlace
-        </h1>
+      <div className='flex flex-col grow h-auto overflow-hidden'>
 
-        <section className='flex flex-col rounded-xl py-3 border-none' style={{ width: "350px" }}>
-          <div role="tablist" className="tabs tabs-lifted border-none">
-            <Link role="tab" href="/dashboard/market/merchant"
-              className={`tab px-14 text-xs uppercase border-none text-base-content`}>
-              Merchant
-            </Link>
-            <Link role="tab" href="/dashboard/market/seller"
-              className={`tab px-14 text-xs uppercase border-none text-primary font-bold`}>
-              Seller
-            </Link>
-          </div>
-        </section>
+
+        <header>
+          <h1 className={`${lusitana.className} text-base-content text-2xl font-bold`}>
+            Seller MarketPlace
+          </h1>
+
+          <section className='flex flex-col rounded-xl py-3' style={{ width: "350px" }}>
+            <div role="tablist" className="tabs tabs-lifted border-none">
+              <Link role="tab" href="/dashboard/market/merchant"
+                className={`tab text-xs uppercase border-none text-base-content  `}>
+                Merchant
+              </Link>
+              <Link role="tab" href="/dashboard/market/seller"
+                className={`tab text-xs uppercase border-none text-primary font-extrabold`}>
+                Seller
+              </Link>
+            </div>
+          </section>
+        </header>
 
         <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
           <table className="table">
@@ -77,7 +81,22 @@ export default async function Page() {
           </table>
         </div>
 
-        <ul className='lg:hidden mt-4 grow overflow-y-auto'>
+        <ul className='lg:hidden mt-4 grow overflow-y-auto pb-20'>
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
+          <MarketListItem />
           <MarketListItem />
           <MarketListItem />
           <MarketListItem />

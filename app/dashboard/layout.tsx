@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <main className={`h-screen flex flex-row overflow-hidden lg:p-4 ${styles.bgImage}`}>
+      <main className={`h-screen flex flex-row lg:p-4 ${styles.bgImage}`}>
         <div className="hidden lg:block flex-none w-1/5 bg-white bg-opacity-90">
           <SideNav />
         </div>
@@ -27,7 +27,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="btm-nav btm-nav-md glass bg-primary text-white shadow-inner lg:hidden">
-
           <BottomNavLinks />
         </div>
       </main>

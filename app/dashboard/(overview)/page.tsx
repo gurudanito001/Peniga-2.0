@@ -100,6 +100,12 @@ export default async function Page() {
             <TransactionCard />
             <TransactionCard />
             <TransactionCard />
+            <TransactionCard />
+            <TransactionCard />
+            <TransactionCard />
+            <TransactionCard />
+            <TransactionCard />
+            <TransactionCard />
           </ul>
         </div>
 

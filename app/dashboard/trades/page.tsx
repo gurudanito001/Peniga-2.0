@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
+      <div className='flex flex-col grow h-auto overflow-hidden'>
         <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
           Your Trades
         </h1>
 
-        <div className="flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
+        <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
           <table className="table">
             <thead>
               <tr>
@@ -161,34 +161,30 @@ export default async function Page() {
           </table>
         </div>
 
-
-
-        {/* <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
-      </div> */}
-      </div>
-
-      <div className="flex md:hidden grow flex-col text-sm overflow-y-auto pb-20">
-        <h1 className={`${lusitana.className} mb-4 text-base-content text-xl font-bold`}>
-          Your Trades
-        </h1>
-        <ul className='mt-4 grow overflow-y-auto'>
+        <ul className='mt-4 lg:hidden grow overflow-y-auto pb-20'>
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
+          <TradesCard />
           <TradesCard />
           <TradesCard />
           <TradesCard />
           <TradesCard />
           
         </ul>
+
       </div>
     </>
 

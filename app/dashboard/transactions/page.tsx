@@ -208,22 +208,6 @@ export default async function Page() {
 
           </table>
         </div>
-
-
-
-        {/* <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
-      </div> */}
       </div>
 
       <div className="flex md:hidden grow flex-col text-sm overflow-y-auto pb-20">
@@ -231,6 +215,22 @@ export default async function Page() {
           Transactions
         </h1>
         <ul className='mt-4 grow overflow-y-auto'>
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
+          <TransactionCard />
           <TransactionCard />
           <TransactionCard />
           <TransactionCard />

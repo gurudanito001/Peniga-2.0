@@ -2,7 +2,7 @@
 import { lusitana } from '@/app/ui/fonts';
 import WalletCard from '@/app/ui/dashboard/walletCard';
 import Tabs from '@/app/ui/dashboard/tabs';
-import {TradesCard} from '@/app/ui/listItems';
+import {EscrowsCard} from '@/app/ui/listItems';
 import { ArrowLongRightIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 
 import { Metadata } from 'next';
@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 export default async function Page() {
   return (
     <>
-      <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
+      <div className='flex flex-col grow h-auto overflow-hidden'>
         <h1 className={`${lusitana.className} mb-4 text-base-content text-2xl font-bold`}>
           Escrows
         </h1>
 
-        <div className="flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
+        <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
           <table className="table">
             <thead>
               <tr>
@@ -57,7 +57,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/escrows/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -83,7 +83,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/escrows/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
               <tr>
@@ -109,7 +109,7 @@ export default async function Page() {
                   <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
                 </td>
                 <td>
-                  <button className="btn btn-ghost btn-sm text-accent">view <ArrowRightIcon className='w-3 mx-2' /> </button>
+                  <Link href="/dashboard/escrows/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                 </td>
               </tr>
             </tbody>
@@ -118,32 +118,24 @@ export default async function Page() {
         </div>
 
 
+        <ul className='mt-4 lg:hidden grow overflow-y-auto pb-20'>
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
+          <EscrowsCard />
 
-        {/* <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
-      </div> */}
-      </div>
-
-      <div className="flex md:hidden grow flex-col text-sm overflow-y-auto pb-20">
-        <h1 className={`${lusitana.className} mb-4 text-base-content text-xl font-bold`}>
-          Escrows
-        </h1>
-        <ul className='mt-4 grow overflow-y-auto'>
-          <TradesCard />
-          <TradesCard />
-          <TradesCard />
-          <TradesCard />
-          
         </ul>
       </div>
     </>

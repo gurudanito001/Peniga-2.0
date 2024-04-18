@@ -6,14 +6,14 @@ import { signOut } from '@/auth';
 
 export default function SideNav() {
   return (
-    <div className="flex h-full flex-col px-3 py-4 ">
+    <div className="flex flex-col h-full px-3 py-4">
       <Link
         className="mb-2 p-4"
         href="/"
       >
         <h1 className='text-2xl text-base-content font-extrabold'>Peniga</h1>
       </Link>
-      <div className="flex grow justify-between flex-col space-x-0 space-y-2 text-sm">
+      <div className="flex flex-col grow justify-between space-x-0 space-y-2 text-sm">
         <NavLinks />
         
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>

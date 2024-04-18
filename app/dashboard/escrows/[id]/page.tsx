@@ -5,7 +5,6 @@ import Tabs from '@/app/ui/dashboard/tabs';
 import {TransactionCard} from '@/app/ui/listItems';
 import { ArrowLongRightIcon, ArrowDownLeftIcon, ArrowRightIcon, PhotoIcon, PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import ModalTemplate from '@/app/ui/dashboard/modalTemplate';
-import ChatSection from './chatSection';
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -23,31 +22,14 @@ export default async function Page({params}: any) {
         <section className='w-full lg:w-3/5 h-auto overflow-y-auto pb-20 lg:pb-0'>
           <header className='max-w-xl'>
             <h1 className={`${lusitana.className} text-base-content text-2xl font-bold`}>
-              View Trade
+              View Escrow
             </h1>
             <div className='flex items-center'>
               <div className="text-sm breadcrumbs">
                 <ul>
-                  <li className='text-base-content'><Link href="/dashboard/trades">List Trades</Link></li>
-                  <li className='text-primary font-bold'><Link href={`/dashboard/trades/${params.id}`}>View Trade</Link></li>
+                  <li className='text-base-content'><Link href="/dashboard/escrows">List Escrows</Link></li>
+                  <li className='text-primary font-bold'><Link href={`/dashboard/escrows/${params.id}`}>View Escrow</Link></li>
                 </ul>
-              </div>
-
-              <div className="drawer drawer-end w-24 ml-auto z-10">
-                <input id="trade-chat-drawer" type="checkbox" className="drawer-toggle" />
-                <div className='z-10 flex'>
-                  {/* Page content here */}
-                  <label htmlFor="trade-chat-drawer" className="btn btn-sm bg-primary glass drawer-button gap-0 text-white ml-auto lg:hidden">
-                    <ChatBubbleOvalLeftEllipsisIcon className='w-5 ' /> 
-                    <span className='ml-1 text-xs'>Chat</span>
-                  </label>
-                </div>
-                <div className="drawer-side z-50">
-                  <label htmlFor="trade-chat-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-                  <ul className="menu p-0 w-[350px] h-full  text-base-content bg-base">
-                    <ChatSection />
-                  </ul>
-                </div>
               </div>
             </div>
           </header>
@@ -90,40 +72,10 @@ export default async function Page({params}: any) {
               </div>
 
               <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Card Name</dt>
-                <dd className={`text-base-content font-semibold ml-auto`}>$200 Sephora</dd>
-              </div>
-
-              <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Card Type</dt>
-                <dd className={`text-base-content font-semibold ml-auto`}>Physical</dd>
-              </div>
-
-              <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Rate</dt>
-                <dd className={`${lusitana.className} text-base-content font-semibold ml-auto`}>₦1,000</dd>
-              </div>
-
-              <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Transaction Amount</dt>
-                <dd className={`${lusitana.className} text-base-content font-semibold ml-auto`}>₦200,000</dd>
-              </div>
-
-              <div className='flex items-center border-b py-3'>
                 <dt className='font-medium text-base-content text-sm'>Status</dt>
                 <dd className={`text-base-content font-semibold ml-auto`}>
                   <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
                 </dd>
-              </div>
-
-              <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Escrow</dt>
-                <dd className={`text-base-content font-semibold ml-auto`}>none</dd>
-              </div>
-
-              <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Dispute</dt>
-                <dd className={`text-base-content font-semibold ml-auto`}>none</dd>
               </div>
 
               <div className='flex items-center py-3'>
@@ -224,44 +176,7 @@ export default async function Page({params}: any) {
               </div>
             </dl>
           </section>
-
-          <section className='bg-neutral max-w-xl p-3 md:p-5 mb-5 rounded-lg mt-5 flex items-center'>
-            <ModalTemplate
-              modalId='acceptTradeModal'
-              heading='Accept Trade Request'
-              description='Are you sure you want to accept this trade request'
-              btnClasses='bg-green-700 shadow-lg  hover:bg-green-800 hover:shadow-none glass px-12 md:px-20'
-              btnText="Accept" />
-
-            <ModalTemplate
-              modalId='declineTradeModal'
-              heading='Decline Trade Request'
-              description='Are you sure you want to decline this trade request'
-              btnClasses='bg-yellow-600 shadow-lg hover:bg-yellow-700 hover:shadow-none glass px-12 md:px-20 ml-auto'
-              btnText="Decline" />
-          </section>
-
-          <section className='bg-neutral max-w-xl p-3 md:p-5 mb-5 rounded-lg mt-5 flex items-center'>
-            <ModalTemplate
-              modalId='completeTradeModal'
-              heading='Complete Trade'
-              description='Make sure you have confirmed that the giftcard is valid. This action will conclude this trade and send funds to the seller'
-              btnClasses='bg-green-700 shadow-lg  hover:bg-green-800 hover:shadow-none glass px-12 md:px-20'
-              btnText="Complete" />
-
-            <ModalTemplate
-              modalId='cancelTradeModal'
-              heading='Cancel Trade'
-              description='Make sure you have not send giftcard. '
-              btnClasses='bg-yellow-600 shadow-lg hover:bg-yellow-700 hover:shadow-none glass px-12 md:px-20 ml-auto'
-              btnText="Cancel" />
-          </section>
         </section>
-
-        <aside className='hidden lg:block lg:w-2/5 border border-purple-100 rounded-lg text-base-content bg-purple-50'>
-          <ChatSection />
-        </aside>
-        
       </div>
 
     </>

@@ -34,7 +34,7 @@ const Tabs = ({tabItems}: TabProps) => {
           return(<Link key={item} role="tab" href={createTabURL(item)} className={clsx(
             'tab px-14 text-xs uppercase border-none',
             {
-              ' text-primary font-bold': item === activeTab,
+              ' text-primary font-extrabold': item === activeTab,
               'text-base-content': item !== activeTab
             },
           )}
