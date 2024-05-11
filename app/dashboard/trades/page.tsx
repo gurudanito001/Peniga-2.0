@@ -1,9 +1,12 @@
 
 import { lusitana } from '@/app/ui/fonts';
-import WalletCard from '@/app/ui/dashboard/walletCard';
-import Tabs from '@/app/ui/dashboard/tabs';
 import {TradesCard} from '@/app/ui/listItems';
-import { ArrowLongRightIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { getAllTrades } from '@/app/lib/data';
+import { auth } from '@/auth';
+import { getUserByEmail } from '@/app/lib/data';
+import moment from 'moment';
+import formatAsCurrency from '@/app/lib/formatAsCurrency';
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -14,6 +17,10 @@ export const metadata: Metadata = {
 
 
 export default async function Page() {
+  const session = await auth();
+  const user = await getUserByEmail(session?.user?.email);
+  const allTrades = await getAllTrades({userId: user?.id});
+  console.log(allTrades)
   return (
     <>
       <div className='flex flex-col grow h-auto overflow-hidden'>
@@ -36,126 +43,51 @@ export default async function Page() {
               </tr>
             </thead>
             <tbody className='text-gray-950'>
-              <tr>
-                <td>1</td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+              {allTrades?.map( (trade, index) =>{
+                return(
+                  <tr key={trade?.id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-12 h-12">
+                            <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold capitalize">{trade?.buyer?.firstName} {trade?.buyer?.lastName}</div>
+                          <div className="text-xs opacity-50">{trade?.buyer?.username || trade?.buyer?.email}</div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-12 h-12">
+                            <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold capitalize">{trade?.seller?.firstName} {trade?.seller?.lastName}</div>
+                          <div className="text-xs opacity-50">{trade?.seller?.username || trade?.seller?.email}</div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-primary text-sm font-semibold mb-1">$200 Sephora</td>
-                <td className={`${lusitana.className} text-base-content font-semibold`}>₦850</td>
-                <td className={`text-base-content font-bold text-lg`}>
-                  <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
-                </td>
-                <td>
-                  <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
-                </td>
-                <td>
-                  <Link href="/dashboard/trades/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-primary font-semibold mb-1 text-sm">$200 Sephora</td>
-                <td className={`${lusitana.className} text-base-content font-semibold`}>₦850</td>
-                <td className={`text-base-content font-bold text-lg`}>
-                  <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
-                </td>
-                <td>
-                  <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
-                </td>
-                <td>
-                  <Link href="/dashboard/trades/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-primary font-semibold mb-1 text-sm">$200 Sephora</td>
-                <td className={`${lusitana.className} text-base-content font-semibold`}>₦850</td>
-                <td className={`text-base-content font-bold text-lg`}>
-                  <span className="badge badge-ghost badge-success text-xs text-success">Successful</span>
-                </td>
-                <td>
-                  <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
-                </td>
-                <td>
-                  <Link href="/dashboard/trades/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
-                </td>
-              </tr>
+                    </td>
+                    <td className="text-primary text-sm font-semibold mb-1 capitalize">${formatAsCurrency(trade?.valueInUSD)} {trade?.cardName}</td>
+                    <td className={`${lusitana.className} text-base-content font-semibold`}>₦{formatAsCurrency(trade?.rate)}</td>
+                    <td className={`text-base-content font-bold text-lg`}>
+                      <span className="badge badge-ghost badge-success text-xs text-success">{trade?.status}</span>
+                    </td>
+                    <td>
+                      <p className="text-xs text-base-content opacity-60 mb-1">{moment(trade?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                    </td>
+                    <td>
+                      <Link href={`/dashboard/trades/${trade?.id}`} className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
+                    </td>
+                  </tr>
+                )
+              })}
+              
             </tbody>
 
           </table>
@@ -182,7 +114,6 @@ export default async function Page() {
           <TradesCard />
           <TradesCard />
           <TradesCard />
-          
         </ul>
 
       </div>

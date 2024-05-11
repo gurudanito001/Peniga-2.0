@@ -1,9 +1,12 @@
 
 import { lusitana } from '@/app/ui/fonts';
-import WalletCard from '@/app/ui/dashboard/walletCard';
-import Tabs from '@/app/ui/dashboard/tabs';
-import {MarketListItem} from '@/app/ui/listItems';
-import { ArrowLongRightIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { MarketListItem } from '@/app/ui/listItems';
+import { ArrowLongRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { auth } from '@/auth';
+import moment from 'moment';
+import formatAsCurrency from '@/app/lib/formatAsCurrency';
+import { getOffersForMarket, getUserByEmail, getOfferById } from '@/app/lib/data';
+import InitiateTradeModal from '../initiateTradeModal';
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -13,7 +16,15 @@ export const metadata: Metadata = {
 };
 
 
-export default async function Page() {
+export default async function Page({searchParams}: {
+  searchParams: {
+    offerId: string
+  }
+}) {
+  const session = await auth();
+  const user = await getUserByEmail(session?.user?.email);
+  const allOffers = await getOffersForMarket({ userId: user?.id, offerCategory: "merchant" });
+  const offer = await getOfferById(searchParams?.offerId)
   return (
     <>
       <div className='flex flex-col grow h-auto overflow-hidden'>
@@ -36,9 +47,9 @@ export default async function Page() {
             </div>
           </section>
         </header>
-        
 
-        <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded mt-4">
+
+        <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded mt-4 px-3">
           <table className="table">
             <thead>
               <tr>
@@ -51,35 +62,47 @@ export default async function Page() {
               </tr>
             </thead>
             <tbody className='text-gray-950'>
-              <tr>
-                <td>1</td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+              {allOffers?.map((item, index) => {
+                return (
+                  <tr key={item?.id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-12 h-12">
+                            <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold">{item?.user?.firstName} {item?.user?.lastName}</div>
+                          <div className="text-xs opacity-50">{item?.user?.username || item?.user?.email}</div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-xs opacity-50">user@exampleemail.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td className={`${lusitana.className} text-base-content font-semibold`}>$400 Sephora</td>
-                <td className={`${lusitana.className} text-base-content font-semibold`}>N1,200</td>
-                <td>
-                  <p>Physical Card</p>
-                  <p className="text-xs text-base-content opacity-60 mb-1">Apr 7th, 2024 15:57:22</p>
-                </td>
-                <td>
-                  <button className="btn btn-outline btn-sm px-5 rounded-lg border-none bg-accent shadow-lg text-white hover:bg-accent hover:text-white hover:border-none hover:shadow-none ">Sell </button>
-                </td>
-              </tr>
-            </tbody>
+                    </td>
+                    <td className={`${lusitana.className} text-base-content font-semibold capitalize`}>
+                      <span className='flex'>${formatAsCurrency(item?.minAmount)} <ArrowLongRightIcon className='w-5' /> ${formatAsCurrency(item?.maxAmount)}</span>  {item?.cardName}
+                    </td>
+                    <td className={`${lusitana.className} text-base-content font-semibold`}>N{formatAsCurrency(item?.rate)}</td>
+                    <td>
+                      <p>{item?.cardType}</p>
+                      <p className="text-xs text-base-content opacity-60 mb-1">{moment(item?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                    </td>
+                    <td>
+                      <Link href={`/dashboard/market/merchant?offerId=${item?.id}`}
+                        className="btn btn-outline btn-sm text-xs h-10 px-6 rounded-lg border-none bg-accent text-white hover:bg-accent hover:text-white hover:border-none hover:shadow-none z-10">
+                        Sell
+                      </Link>
+                    </td>
+                  </tr>
+                )
+              })}
 
+            </tbody>
           </table>
         </div>
+
+        {searchParams?.offerId && <InitiateTradeModal offerId={searchParams?.offerId}/>}
+                      
 
         <ul className='lg:hidden mt-4 grow overflow-y-auto pb-20'>
           <MarketListItem />

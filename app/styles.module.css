@@ -5,3 +5,11 @@
   height: 100vh;
   color: #ffffff9e;
 }
+
+.loginBg {
+  background-image: url('../public/loginBg2.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: #ffffff9e;
+}

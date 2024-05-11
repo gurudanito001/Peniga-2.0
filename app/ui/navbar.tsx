@@ -1,23 +1,25 @@
-"use client"
 
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { lusitana } from "./fonts";
 import { NotificationListItem } from "./listItems";
-import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { auth } from "@/auth";
+import { getUserByEmail } from "../lib/data";
 
 
 
-const NavBar = () => {
-  const pathname = usePathname()
+const NavBar = async () => {
+  const session = await auth()
+  const user = await getUserByEmail(session?.user?.email);
+  console.log(user);
   return (
-    <nav  className={clsx(
+    <nav className="navbar text-base-content mb-4" /* className={clsx(
       'navbar text-base-content',
       {
         'hidden lg:flex' :pathname !== "/dashboard"
       }
-    )}>
+    )} */>
       <div className="navbar-start">
         <div className="flex items-center lg:hidden">
           <div className="avatar">
@@ -27,14 +29,14 @@ const NavBar = () => {
             </div>
           </div>
           <p className='text-gray-700 ms-3 '>
-            <span className='font-semibold'>Hi,</span> <span className='text-gray-950 font-bold'>Daniel</span>
+            <span className='font-semibold'>Hi,</span> <span className='text-gray-950 font-bold'>{user?.firstName}</span>
           </p>
         </div>
       </div>
 
 
 
-      <div className="navbar-end flex items-center">
+      <div className="navbar-end flex items-center lg:w-full">
         <div className="drawer drawer-end w-9 ml-auto z-10">
           <input id="notification-drawer" type="checkbox" className="drawer-toggle" />
           <div>
@@ -64,29 +66,10 @@ const NavBar = () => {
                   <NotificationListItem />
                   <NotificationListItem />
                 </ul>
-                
               </section>
             </div>
           </div>
         </div>
-
-        {/* <div className="drawer drawer-end w-9 ml-5 flex">
-          <input id="menu-drawer-mobile" type="checkbox" className="drawer-toggle" />
-          <div>
-            <label htmlFor="menu-drawer-mobile" className="btn btn-circle btn-sm btn-outline glass drawer-button text-gray-950 flex align-middle">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
-              </svg>
-            </label>
-          </div>
-          <div className="drawer-side z-30">
-            <label htmlFor="menu-drawer-mobile" aria-label="close sidebar" className="drawer-overlay"></label>
-            <ul className={`menu p-4 w-80 min-h-full text-base-content rounded-xl bg-base opacity-95`}>
-              <li><a>Sidebar Item 1</a></li>
-              <li><a>Sidebar Item 2</a></li>
-            </ul>
-          </div>
-        </div> */}
       </div>
     </nav>
 

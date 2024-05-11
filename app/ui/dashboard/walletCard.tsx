@@ -1,35 +1,31 @@
+import WalletContent from './walletContent';
+import { auth } from '@/auth';
+import { getUserByEmail, getWalletBalance } from '@/app/lib/data';
+import { getBanks } from '@/app/lib/data';
+import { getUserBalance } from '@/app/lib/data';
 
-import { PaperAirplaneIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { lusitana } from '@/app/ui/fonts';
 
 
 
-const WalletCard = () => {
+const WalletCard = async (/* {user, walletBalance}: {user: any, walletBalance: any} */) => {
+  const session = await auth();
+  const user: any = await getUserByEmail(session?.user?.email);
+  const walletBalance = await getUserBalance(user?.id) //await getWalletBalance(user?.wallet?.walletData?.accountNumber);
+  const banks = await getBanks();
+
   return (
-    <section className='mt-4 mb-6'>
-      <div className="card w-100 max-w-sm bg-primary glass text-base-300 shadow-lg">
-        <div className="card-body flex flex-row items-start ">
-          <div className=''>
-            <dl>
-              <dt className='text-xs font-bold'>
-                Ledger Balance
-              </dt>
+    <section className='mt-4 mb-6 w-full'>
+      <div className='w-full'>
 
-              <dd className={`${lusitana?.className} d-flex align-middle font-bold md:text-lg`}>₦245,000 </dd>
+        <WalletContent banks={banks} user={user} walletBalance={walletBalance} />
 
-              <dt className='text-xs font-bold mt-3'>Available Balance</dt>
-              <dd className={`${lusitana?.className} text-2xl md:text-3xl font-extrabold`}>₦45,000</dd>
-            </dl>
-          </div>
-
-          <div className="flex flex-col ml-auto gap my-auto">
-            <button className="block btn btn-sm glass hover:glass text-xs text-base-100">Send <PaperAirplaneIcon className="w-3 ml-1 inline" /></button>
-            <button className="block btn btn-sm glass hover:glass text-xs text-base-300 mt-5">Add Funds  <PlusIcon className="w-3 ml-1 inline" /></button>
-          </div>
-        </div>
       </div>
     </section>
   )
 }
 
 export default WalletCard
+
+
+
+

@@ -1,0 +1,235 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String            @id @default(uuid())
+  firstName       String
+  lastName        String
+  avater          String?
+  email           String            @unique
+  username        String?           @unique
+  password        String?    
+  role            Role              @default(USER)    
+  email_confirmed Boolean           @default(false)
+  offers          Offer[]
+  trades          Trade[]
+  Buyer           Trade[]           @relation("Buyer")  //@relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  Seller          Trade[]           @relation("Seller")
+  Benefactor      Transaction[]     @relation("Benefactor")
+  Beneficiary     Transaction[]     @relation("Beneficiary")
+  Sender          Notification[]    @relation("Sender")
+  Receiver        Notification[]    @relation("Receiver")
+  DisputeWinner   Dispute[]         @relation("DisputeWinner")
+  wallet          Wallet?
+  escrow          Escrow[]
+  dispute         Dispute[]
+  beneficiaries   Beneficiary[]
+  sentMessages    Message[]         @relation("Sender")
+  receivedMessages Message[]         @relation("Receiver")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Wallet {
+  id                String          @id @default(uuid())
+  user              User            @relation(fields: [userId], references: [id],  onDelete: Cascade) 
+  userId            String          @unique
+  currency          String          @default("NGN")
+  currentBalance    Float           @default(0.00)
+  availableBalance  Float           @default(0.00)
+  showBalance       Boolean         @default(true)
+  walletData        Json?            
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Offer {
+  id              String            @id @default(uuid())
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  userId          String
+  cardName        String    
+  valueInUSD      Int? // seller detail only
+  rate            Float
+  minAmount        Int? // buyer detail only
+  maxAmount        Int? // buyer detail only
+  cardType        String? 
+  offerCategory   String            @default("merchant")
+  Location        String?
+  trades          Trade[]
+  status          OfferStatus       @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Trade {
+  id              String            @id @default(uuid())
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  userId          String
+  buyer           User              @relation("Buyer", fields: [buyerId], references: [id],  onDelete: Cascade) 
+  buyerId         String
+  seller          User              @relation("Seller", fields: [sellerId], references: [id],  onDelete: Cascade) 
+  sellerId        String
+  cardName        String
+  valueInUSD      Int
+  rate            Float  
+  cardType        String
+  giftCardSent    Boolean?          @default(false)
+  timeSent        DateTime?
+  offer           Offer             @relation(fields: [offerId], references: [id],  onDelete: Cascade) 
+  offerId         String
+  transaction     Transaction?
+  escrow          Escrow?
+  dispute         Dispute?
+  status          TradeStatus       @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Transaction {
+  id              String            @id @default(uuid())
+  benefactor      User              @relation("Benefactor", fields: [benefactorId], references: [id],  onDelete: Cascade) 
+  benefactorId    String
+  beneficiary     User              @relation("Beneficiary", fields: [beneficiaryId], references: [id],  onDelete: Cascade) 
+  beneficiaryId   String
+  amount          Float
+  trade           Trade?            @relation(fields: [tradeId], references: [id]) 
+  tradeId         String?           @unique
+  type            TransactionType   @default(CREDIT)
+  category        String
+  status          TransactionStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Beneficiary {
+  id              String            @id @default(uuid())
+  user            User              @relation(fields: [userId], references: [id],  onDelete: Cascade) 
+  userId          String
+  bankName        String
+  accountName     String
+  accountNumber   String  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Notification {
+  id              String            @id @default(uuid())
+  receiver        User              @relation("Receiver", fields: [receiverId], references: [id],  onDelete: Cascade) 
+  receiverId      String
+  sender          User?             @relation("Sender", fields: [senderId], references: [id],  onDelete: Cascade) 
+  senderId        String
+  viewed          Boolean           @default(false)
+  message         String    
+  url             String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+
+
+model Escrow {
+  id                String          @id @default(uuid())
+  user              User            @relation(fields: [userId], references: [id],  onDelete: Cascade) 
+  userId            String
+  trade             Trade           @relation(fields: [tradeId], references: [id], onDelete: Cascade) 
+  tradeId           String          @unique
+  amount            Float
+  status            EscrowStatus   @default(PENDING)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Dispute {
+  id                String          @id @default(uuid())
+  user              User            @relation(fields: [userId], references: [id],  onDelete: Cascade) 
+  userId            String
+  trade             Trade           @relation(fields: [tradeId], references: [id], onDelete: Cascade) 
+  tradeId           String          @unique
+  buyerId           String?
+  sellerId          String?
+  reason            String
+  mediaProof        String   
+  mediaProofType    String
+  disputeWinner     User?           @relation("DisputeWinner", fields: [disputeWinnerId], references: [id],  onDelete: Cascade)
+  disputeWinnerId   String?
+  status            DisputeStatus?  @default(PENDING)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  sender      User?     @relation("Sender", fields: [senderId], references: [id],  onDelete: Cascade)
+  senderId    String?
+  receiver    User?     @relation("Receiver", fields: [receiverId], references: [id],  onDelete: Cascade)
+  receiverId  String?
+  resourceId  String?
+  resourceUrl String?
+  message     String?
+  isGiftCard  Boolean  @default(false)
+  viewed      Boolean? @default(false)
+  appMessage  Boolean  @default(false) 
+  extraData   Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum TransactionStatus {
+  PENDING
+  FAILED
+  SUCCESSFUL
+}
+
+enum EscrowStatus {
+  PENDING
+  REVERTED
+  DISBURSED
+}
+
+enum TradeStatus {
+  PENDING
+  CANCELLED
+  DECLINED
+  ACCEPTED
+  DISPUTED
+  SUCCESSFUL
+}
+
+enum OfferCategory {
+  MERCHANT 
+  SELLER
+}
+
+enum OfferStatus {
+  PENDING 
+  CANCELLED
+  COMPLETED
+}
+
+enum DisputeStatus {
+  PENDING
+  RESOLVED
+}
+
+
+
+
