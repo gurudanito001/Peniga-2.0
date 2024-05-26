@@ -7,6 +7,7 @@
     "prettier:check": "prettier --check --ignore-unknown .",
     "start": "next start",
     "seed": "node -r dotenv/config ./scripts/seed.js",
+    "delete": "node -r dotenv/config ./scripts/deleteData.ts",
     "lint": "next lint"
   },
   "dependencies": {

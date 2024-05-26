@@ -13,6 +13,7 @@ import formatAsCurrency from '@/app/lib/formatAsCurrency';
 import moment from 'moment';
 import { acceptTrade } from '@/app/lib/actions';
 import { getMessages } from '@/app/lib/data';
+import Image from 'next/image';
 
 
 
@@ -48,23 +49,23 @@ export default async function Page({ params }: any) {
               </div>
 
 
-              { (trade?.status === "ACCEPTED" || trade?.status === "DISPUTED") &&  
+              {(trade?.status === "ACCEPTED" || trade?.status === "DISPUTED") &&
                 <div className="drawer drawer-end w-24 ml-auto z-10">
-                <input id="trade-chat-drawer" type="checkbox" className="drawer-toggle" />
-                <div className='z-10 flex'>
-                  {/* Page content here */}
-                  <label htmlFor="trade-chat-drawer" className="btn btn-sm bg-primary glass drawer-button gap-0 text-white ml-auto lg:hidden">
-                    <ChatBubbleOvalLeftEllipsisIcon className='w-5 ' />
-                    <span className='ml-1 text-xs'>Chat</span>
-                  </label>
-                </div>
-                <div className="drawer-side z-50">
-                  <label htmlFor="trade-chat-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-                  <ul className="menu p-0 w-[350px] h-full  text-base-content bg-base">
-                    <ChatSection trade={trade} userId={user?.id} messages={messages} />
-                  </ul>
-                </div>
-              </div>}
+                  <input id="trade-chat-drawer" type="checkbox" className="drawer-toggle" />
+                  <div className='z-10 flex'>
+                    {/* Page content here */}
+                    <label htmlFor="trade-chat-drawer" className="btn btn-sm bg-primary glass drawer-button gap-0 text-white ml-auto lg:hidden">
+                      <ChatBubbleOvalLeftEllipsisIcon className='w-5 ' />
+                      <span className='ml-1 text-xs'>Chat</span>
+                    </label>
+                  </div>
+                  <div className="drawer-side z-50">
+                    <label htmlFor="trade-chat-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+                    <ul className="menu p-0 w-[375px] h-full  text-base-content bg-base">
+                      <ChatSection trade={trade} userId={user?.id} messages={messages} />
+                    </ul>
+                  </div>
+                </div>}
 
             </div>
           </header>
@@ -77,9 +78,7 @@ export default async function Page({ params }: any) {
                 <dd className='ml-auto'>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
+                      <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                     </div>
                     <div>
                       <div className="font-bold capitalize">{trade?.buyer?.firstName} {trade?.buyer?.lastName}</div>
@@ -94,9 +93,7 @@ export default async function Page({ params }: any) {
                 <dd className='ml-auto'>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
+                      <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                     </div>
                     <div>
                       <div className="font-bold capitalize">{trade?.seller?.firstName} {trade?.seller?.lastName}</div>
@@ -124,6 +121,16 @@ export default async function Page({ params }: any) {
               <div className='flex items-center border-b py-3'>
                 <dt className='font-medium text-base-content text-sm'>Card Type</dt>
                 <dd className={`text-base-content font-semibold ml-auto capitalize`}>{trade?.cardType}</dd>
+              </div>
+
+              <div className='flex items-center border-b py-3'>
+                <dt className='font-medium text-base-content text-sm'>Giftcard Sent</dt>
+                <dd className={`text-base-content font-semibold ml-auto capitalize`}>{trade?.giftCardSent ? "Yes" : "No"}</dd>
+              </div>
+
+              <div className='flex items-center border-b py-3'>
+                <dt className='font-medium text-base-content text-sm'>Giftcard Sent Time</dt>
+                <dd className={`text-base-content font-semibold ml-auto capitalize`}>{trade?.timeSent ? moment(trade?.timeSent).format('MMMM Do YYYY, h:mm:ss a') : "-------"}</dd>
               </div>
 
               <div className='flex items-center border-b py-3'>
@@ -187,7 +194,7 @@ export default async function Page({ params }: any) {
             </section>}
 
 
-            {(trade?.status === "ACCEPTED") &&
+          {(trade?.status === "ACCEPTED") &&
             <section className='bg-neutral max-w-xl p-3 md:p-5 mb-5 rounded-lg mt-5 flex items-center'>
               {trade?.buyerId === user?.id &&
                 <ModalTemplate
@@ -211,12 +218,12 @@ export default async function Page({ params }: any) {
                 />
               }
             </section>
-            }
+          }
         </section>
 
-        
+
         <aside className='hidden lg:block lg:w-2/5 border border-purple-100 rounded-lg text-base-content bg-purple-50'>
-          {(trade?.status === "ACCEPTED" || trade?.status === "DISPUTED") &&
+          {((trade?.status === "ACCEPTED" || trade?.status === "DISPUTED") && trade?.escrow?.id ) &&
             <ChatSection trade={trade} userId={user?.id} messages={messages} />
           }
         </aside>

@@ -7,6 +7,7 @@ import moment from 'moment';
 import formatAsCurrency from '@/app/lib/formatAsCurrency';
 import { getOffersForMarket, getUserByEmail, getOfferById } from '@/app/lib/data';
 import InitiateTradeModal from '../initiateTradeModal';
+import Image from 'next/image';
 
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -69,9 +70,7 @@ export default async function Page({searchParams}: {
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="avatar">
-                          <div className="mask mask-squircle w-12 h-12">
-                            <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                          </div>
+                            <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                         </div>
                         <div>
                           <div className="font-bold">{item?.user?.firstName} {item?.user?.lastName}</div>
@@ -82,7 +81,7 @@ export default async function Page({searchParams}: {
                     <td className={`${lusitana.className} text-base-content font-semibold capitalize`}>
                       <span className='flex'>${formatAsCurrency(item?.minAmount)} <ArrowLongRightIcon className='w-5' /> ${formatAsCurrency(item?.maxAmount)}</span>  {item?.cardName}
                     </td>
-                    <td className={`${lusitana.className} text-base-content font-semibold`}>N{formatAsCurrency(item?.rate)}</td>
+                    <td className={`${lusitana.className} text-base-content font-semibold`}>₦{formatAsCurrency(item?.rate)}</td>
                     <td>
                       <p>{item?.cardType}</p>
                       <p className="text-xs text-base-content opacity-60 mb-1">{moment(item?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>

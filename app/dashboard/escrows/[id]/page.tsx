@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import formatAsCurrency from '@/app/lib/formatAsCurrency';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -46,9 +47,7 @@ export default async function Page({params}: {params: {id: string}}) {
                 <dd className='ml-auto'>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
+                      <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                     </div>
                     <div>
                       <div className="font-bold">{escrow?.trade?.seller?.firstName} {escrow?.trade?.seller?.lastName}</div>
@@ -89,9 +88,7 @@ export default async function Page({params}: {params: {id: string}}) {
                 <dd className='ml-auto'>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
+                      <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                     </div>
                     <div>
                       <div className="font-bold capitalize">{escrow?.trade?.buyer?.firstName} {escrow?.trade?.buyer?.lastName}</div>
@@ -106,9 +103,7 @@ export default async function Page({params}: {params: {id: string}}) {
                 <dd className='ml-auto'>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                      </div>
+                      <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                     </div>
                     <div>
                       <div className="font-bold capitalize">{escrow?.trade?.seller?.firstName} {escrow?.trade?.seller?.lastName}</div>

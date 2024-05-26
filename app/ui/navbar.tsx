@@ -6,6 +6,7 @@ import { NotificationListItem } from "./listItems";
 import clsx from "clsx";
 import { auth } from "@/auth";
 import { getUserByEmail } from "../lib/data";
+import Image from "next/image";
 
 
 
@@ -23,10 +24,7 @@ const NavBar = async () => {
       <div className="navbar-start">
         <div className="flex items-center lg:hidden">
           <div className="avatar">
-            <div className="w-14 rounded-full">
-              {/* <Image src="/placeholder-user.jpeg" alt='Placeholder user' width={40} height={40} /> */}
-              <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-            </div>
+            <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
           </div>
           <p className='text-gray-700 ms-3 '>
             <span className='font-semibold'>Hi,</span> <span className='text-gray-950 font-bold'>{user?.firstName}</span>

@@ -145,7 +145,7 @@ export async function fetchTransactions(data: {accountNuber: string, pageSize: n
     if(data?.accountNuber){
       const res = await axios({
         method: 'get',
-        url: `${process.env.MONNIFY_BASE_URL}/disbursements/wallet/transactions?accountNumber=${data?.accountNuber}&pageSize=${data?.pageSize || 20}&pageNumber=${data?.pageNo || 1}`,
+        url: `${process.env.MONNIFY_BASE_URL}/disbursements/wallet/transactions?accountNumber=${data?.accountNuber}&pageSize=${data?.pageSize || 20}&pageNumber=${data?.pageNo || 0}`,
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -155,6 +155,36 @@ export async function fetchTransactions(data: {accountNuber: string, pageSize: n
       return res.data?.responseBody;
     }
     return null
+  } catch (error: any) {
+    if (error.response) {
+      console.log(error.response.data);
+      throw new Error(error.response.data?.responseMessage)
+    } else if (error.request) {
+      throw new Error("Oops!! Something went wrong");
+    } else {
+      throw new Error("Oops!! Something went wrong");
+    }
+  }
+}
+
+export async function fetchAllTransactions(data: { pageSize?: number, pageNo?: number}) {
+  
+  try {
+    const session = await auth();
+    const user = await getUserByEmail(session?.user?.email);
+    let accessToken = await getAccessToken();
+    
+    const res = await axios({
+      method: 'get',
+      url: `${process.env.MONNIFY_BASE_URL}/transactions/search?page=${data?.pageNo}&size=${data?.pageSize}`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+    })
+    return res.data?.responseBody;
+    
   } catch (error: any) {
     if (error.response) {
       console.log(error.response.data);
@@ -183,15 +213,15 @@ export async function getTotalEscrows(userId: string | undefined){
   return total
 }
 
-export async function getUserBalance (buyerId: string | undefined){
+export async function getUserBalance (userId: string | undefined){
   try {
     const buyer = await prisma.user.findFirst({
-      where: {id: buyerId},
+      where: {id: userId},
       include: {
         wallet: true
       }
     })
-    const buyerEscrows = await getTotalEscrows(buyerId);
+    const buyerEscrows = await getTotalEscrows(userId);
     const buyerWalletBalance: {availableBalance: number, ledgerBalance: number} = await getWalletBalance(buyer?.wallet?.walletData?.accountNumber);
     buyerWalletBalance.availableBalance = buyerWalletBalance.availableBalance - buyerEscrows
     return buyerWalletBalance ;
@@ -314,13 +344,15 @@ export async function getTradeById(id: string | null | undefined) {
   return trade;
 }
 
-export async function getAllTrades(filterData: {userId: string | undefined}) {
+export async function getAllTrades(filterData: {userId?: string | undefined}) {
   const trades = await prisma.trade.findMany({
     where: {
-      OR: [
-        {buyerId: filterData?.userId},
-        {sellerId: filterData?.userId}
-      ]
+      ...(filterData?.userId && {
+        OR: [
+          {buyerId: filterData?.userId},
+          {sellerId: filterData?.userId}
+        ]
+      })
     },
     include: {
       buyer: true,
@@ -336,7 +368,7 @@ export async function getAllTrades(filterData: {userId: string | undefined}) {
 
 // --------------------------------- MESSAGES -----------------------------------------------
 
-export async function getMessages(resourceId: string) {
+export async function getMessages(resourceId: string | undefined) {
   const messages = await prisma.message.findMany({
     where: {resourceId },
   })
@@ -348,7 +380,13 @@ export async function getMessages(resourceId: string) {
 
 export async function getDisputeById(id: string | null | undefined) {
   const dispute = await prisma.dispute.findFirst({
-    where: {...(id && {id}) }
+    where: {...(id && {id}) },
+    include: {
+      user: true,
+      trade: {
+        select: { buyer: true, seller: true, valueInUSD: true, rate: true, cardName: true, cardType: true }
+      }
+    }
   })
   return dispute;
 }
@@ -367,7 +405,7 @@ export async function getAllDisputes(filterData:  {userId?: string | undefined, 
     include: {
       user: true,
       trade: {
-        select: { buyer: true, seller: true, valueInUSD: true, rate: true, }
+        select: { buyer: true, seller: true, valueInUSD: true, rate: true }
       }
     }
   })
@@ -397,7 +435,7 @@ export async function getEscrowById(id: string | null | undefined) {
   return escrow;
 }
 
-export async function getAllEscrows(userId: string | undefined) {
+export async function getAllEscrows(userId?: string | undefined) {
   const escrows = await prisma.escrow.findMany({
     where: {userId},
     include: {

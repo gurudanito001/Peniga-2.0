@@ -10,30 +10,31 @@ import InitiateTradeForm from "./initiateTradeForm";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getOfferById } from "@/app/lib/data";
+import Image from "next/image";
 
 
 
-const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
+const InitiateTradeModal = async ({ offerId, }: { offerId: string }) => {
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email);
   const offer = await getOfferById(offerId);
 
 
- /*  const pathName = usePathname();
-  const router = useRouter();
-
-  const handleClickOpenModal = () =>{
-    router.push(`${pathName}?offerId=${id}`)
-  }
-
-  const handleClickCloseModal = () =>{
-    router.push(`${pathName}`)
-  }
- */
+  /*  const pathName = usePathname();
+   const router = useRouter();
+ 
+   const handleClickOpenModal = () =>{
+     router.push(`${pathName}?offerId=${id}`)
+   }
+ 
+   const handleClickCloseModal = () =>{
+     router.push(`${pathName}`)
+   }
+  */
 
   return (
     <div className="drawer drawer-end w-16">
-      <input id={`initiateTrade-drawer`} type="checkbox"  className="drawer-toggle" />
+      <input id={`initiateTrade-drawer`} type="checkbox" className="drawer-toggle" />
       {/* <div>
         {category === "merchant" ?
           <label htmlFor={`initiateTrade-drawer`} onClick={handleClickOpenModal} className="btn btn-outline btn-md px-6 rounded-lg border-none bg-accent text-white hover:bg-accent hover:text-white hover:border-none hover:shadow-none z-10">
@@ -45,11 +46,11 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
         }
       </div> */}
       <div className="drawer-side z-50">
-        
+
         <label /* htmlFor={`initiateTrade-drawer`} */ aria-label="close sidebar" className="drawer-overlay">
           <Link className=" block h-full w-full" href={`/dashboard/market/${offer?.offerCategory}`}> </Link>
         </label>
-        
+
         <div className="menu p-4 w-[350px] lg:w-[400px] min-h-full flex flex-col text-base-content rounded-s-lg bg-base transition ease-in-out">
           <header className="flex items-center">
             <h4 className={`${lusitana.className} text-2xl font-bold`}>Initiate Trade</h4>
@@ -58,7 +59,7 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
               {/* <label htmlFor={`initiateTrade-drawer`} className="btn btn-circle btn-sm ml-auto">
               </label> */}
             </Link>
-            
+
           </header>
 
           <section className="h-auto w-full grow mt-16">
@@ -71,9 +72,7 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
                   {offer?.offerCategory === "merchant" &&
                     <div className="flex items-center gap-3 ml-auto">
                       <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                        </div>
+                        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                       </div>
                       <div>
                         <div className="font-bold capitalize">{offer?.user?.firstName} {offer?.user?.lastName}</div>
@@ -84,9 +83,7 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
                   {offer?.offerCategory === "seller" &&
                     <div className="flex items-center gap-3 ml-auto">
                       <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                        </div>
+                        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                       </div>
                       <div>
                         <div className="font-bold capitalize">{user?.firstName} {user?.lastName}</div>
@@ -101,9 +98,7 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
                   {offer?.offerCategory === "seller" &&
                     <div className="flex items-center gap-3 ml-auto">
                       <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                        </div>
+                        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                       </div>
                       <div>
                         <div className="font-bold capitalize">{offer?.user?.firstName} {offer?.user?.lastName}</div>
@@ -114,9 +109,7 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
                   {offer?.offerCategory === "merchant" &&
                     <div className="flex items-center gap-3 ml-auto">
                       <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                        </div>
+                        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                       </div>
                       <div>
                         <div className="font-bold capitalize">{user?.firstName} {user?.lastName}</div>
@@ -153,7 +146,7 @@ const InitiateTradeModal =  async ({ offerId,}: { offerId: string}) => {
             {
               offer?.id && <InitiateTradeForm offer={offer} user={user} />
             }
-            
+
 
           </section>
         </div>

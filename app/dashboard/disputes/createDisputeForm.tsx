@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { createDispute } from "@/app/lib/actions";
+import Image from "next/image";
 
 const CreateDisputeForm = ({userId, trade, closeForm}: {userId: string, trade: any, closeForm: ()=>void}) =>{
 
@@ -70,14 +71,12 @@ const CreateDisputeForm = ({userId, trade, closeForm}: {userId: string, trade: a
   const handleSubmit = async()=>{
     
     let data = {...formData};
-    return console.log(data)
     if(file?.name){
       setIsSendingFile(true);
       const fileUrl = await postFile(file.name, file)
       data.mediaProof = fileUrl;
       setIsSendingFile(false);
     }
-
     const res = createDispute(data).then( (res: any) =>{
       setPostingData(false);
       console.log(res)
@@ -139,7 +138,7 @@ const CreateDisputeForm = ({userId, trade, closeForm}: {userId: string, trade: a
           <>
             {fileUrl &&
               <div>
-                <img src={fileUrl} className=" max-h-40 mx-auto" alt="Preview file" />
+                 <Image src={fileUrl} className=" max-h-40 mx-auto" width={350} height={160} style={{width: "350px", height: "160px", objectFit: "contain" }} alt='preview file' />
               </div>
             }
           </>

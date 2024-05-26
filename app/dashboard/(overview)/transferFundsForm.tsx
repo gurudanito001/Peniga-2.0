@@ -34,6 +34,7 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
     dateCreated: "",
     reference: ""
   })
+
   const [authorizationData, setAuthorizationData] = useState({
     reference: "",
     authorizationCode: ""
@@ -112,6 +113,7 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
       authorize()
     }
   }, [authorizationData?.authorizationCode])
+  
   return (
     <>
       {successMessage &&

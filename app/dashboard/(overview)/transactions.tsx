@@ -11,7 +11,7 @@ import { TransactionCard } from '@/app/ui/listItems';
 import { ArrowUpRightIcon, ArrowDownLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import CreateWallet from './createWallet';
 import { auth } from '@/auth';
-import { getUserByEmail, fetchTransactions } from '@/app/lib/data';
+import { getUserByEmail, fetchTransactions, fetchAllTransactions } from '@/app/lib/data';
 import type { User } from '@prisma/client';
 import moment from 'moment';
 import { Metadata } from 'next';
@@ -21,7 +21,12 @@ import formatAsCurrency from '@/app/lib/formatAsCurrency';
 const Transactions = async()=>{
   const sesssion = await auth();
   const user = await getUserByEmail(sesssion?.user?.email);
-  const transactions = await fetchTransactions({accountNuber: user?.wallet?.walletData?.accountNumber, pageNo: 1, pageSize: 10})
+  const transactions = user?.role === "USER" ? 
+  await fetchTransactions({accountNuber: user?.wallet?.walletData?.accountNumber, pageNo: 0, pageSize: 10}) :
+  await fetchAllTransactions({pageNo: 0, pageSize: 20})
+  console.log("all transactions", transactions);
+
+
   return (
     <div className="hidden lg:flex lg:flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
       <table className="table">

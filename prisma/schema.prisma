@@ -187,6 +187,7 @@ model Message {
 enum Role {
   USER
   ADMIN
+  SUPERADMIN
 }
 enum TransactionType {
   DEBIT

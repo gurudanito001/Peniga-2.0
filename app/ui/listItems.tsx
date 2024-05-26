@@ -2,6 +2,7 @@
 import { ArrowUpRightIcon, ArrowDownLeftIcon } from "@heroicons/react/24/outline";
 import { lusitana } from "./fonts";
 import Link from "next/link";
+import Image from "next/image";
 
 
 
@@ -29,14 +30,10 @@ export const TradesCard = ({status = "credit"}) =>{
   <Link className="flex align-middle border-b py-3"  href={`/dashboard/trades/1`}>
     <div className="avatar-group -space-x-9 rtl:space-x-reverse">
       <div className="avatar" >
-        <div className="w-12">
-          <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-        </div>
+        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
       </div>
       <div className="avatar">
-        <div className="w-12">
-          <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-        </div>
+        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
       </div>
     </div>
     <div className="ml-3 flex flex-col justify-center">
@@ -57,14 +54,10 @@ export const EscrowsCard = ({status = "credit"}) =>{
   <Link className="flex align-middle border-b py-3"  href={`/dashboard/escrows/1`}>
     <div className="avatar-group -space-x-9 rtl:space-x-reverse">
       <div className="avatar" >
-        <div className="w-12">
-          <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-        </div>
+        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
       </div>
       <div className="avatar">
-        <div className="w-12">
-          <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-        </div>
+        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
       </div>
     </div>
     <div className="ml-3 flex flex-col justify-center">
@@ -118,9 +111,7 @@ export const MarketListItem = () =>{
   return(
     <Link className="flex flex-row items-center border-b py-3" href="/dashboard/trades/1">
     <div className="avatar" >
-      <div className="w-12 rounded-full">
-        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-      </div>
+      <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
     </div>
     <div className="ml-3 flex flex-col justify-center">
       <p className="text-base-content font-semibold mb-1 text-sm">$200 Sephora</p>

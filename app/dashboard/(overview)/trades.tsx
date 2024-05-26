@@ -7,12 +7,13 @@ import { auth } from '@/auth';
 import { getUserByEmail } from '@/app/lib/data';
 import moment from 'moment';
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 const Trades = async() =>{
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email);
-  const allTrades = await getAllTrades({userId: user?.id});
+  const allTrades = user?.role === "USER" ? await getAllTrades({userId: user?.id}) : await getAllTrades({});
 
   return(
     <div className="hidden lg:flex flex-col grow h-auto overflow-y-scroll bg-white opacity-85 w-full rounded">
@@ -37,9 +38,7 @@ const Trades = async() =>{
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="avatar">
-                          <div className="mask mask-squircle w-12 h-12">
-                            <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                          </div>
+                          <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                         </div>
                         <div>
                           <div className="font-bold capitalize">{trade?.buyer?.firstName} {trade?.buyer?.lastName}</div>
@@ -50,9 +49,7 @@ const Trades = async() =>{
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="avatar">
-                          <div className="mask mask-squircle w-12 h-12">
-                            <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
-                          </div>
+                          <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                         </div>
                         <div>
                           <div className="font-bold capitalize">{trade?.seller?.firstName} {trade?.seller?.lastName}</div>
