@@ -30,6 +30,7 @@ model User {
   Receiver        Notification[]    @relation("Receiver")
   DisputeWinner   Dispute[]         @relation("DisputeWinner")
   wallet          Wallet?
+  payment         Payment[]
   escrow          Escrow[]
   dispute         Dispute[]
   beneficiaries   Beneficiary[]
@@ -59,8 +60,8 @@ model Offer {
   cardName        String    
   valueInUSD      Int? // seller detail only
   rate            Float
-  minAmount        Int? // buyer detail only
-  maxAmount        Int? // buyer detail only
+  minAmount       Int? // buyer detail only
+  maxAmount       Int? // buyer detail only
   cardType        String? 
   offerCategory   String            @default("merchant")
   Location        String?
@@ -82,12 +83,15 @@ model Trade {
   valueInUSD      Int
   rate            Float  
   cardType        String
+  transferSent    Boolean?          @default(false)
   giftCardSent    Boolean?          @default(false)
   timeSent        DateTime?
   offer           Offer             @relation(fields: [offerId], references: [id],  onDelete: Cascade) 
   offerId         String
-  transaction     Transaction?
+  transaction     Transaction[]
   escrow          Escrow?
+  payment         Payment?
+  tempAccount     TempAccount?
   dispute         Dispute?
   status          TradeStatus       @default(PENDING)
   createdAt       DateTime          @default(now())
@@ -96,16 +100,43 @@ model Trade {
 
 model Transaction {
   id              String            @id @default(uuid())
+  flwId           String?
   benefactor      User              @relation("Benefactor", fields: [benefactorId], references: [id],  onDelete: Cascade) 
   benefactorId    String
   beneficiary     User              @relation("Beneficiary", fields: [beneficiaryId], references: [id],  onDelete: Cascade) 
   beneficiaryId   String
   amount          Float
-  trade           Trade?            @relation(fields: [tradeId], references: [id]) 
-  tradeId         String?           @unique
+  trade           Trade?            @relation(fields: [tradeId], references: [id], onDelete: Cascade) 
+  tradeId         String?  
+  escrow          Escrow?            @relation(fields: [escrowId], references: [id], onDelete: Cascade) 
+  escrowId        String?         
   type            TransactionType   @default(CREDIT)
   category        String
+  transactionData Json
   status          TransactionStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model TempAccount {
+  id              String            @id @default(uuid())
+  trade           Trade             @relation(fields: [tradeId], references: [id], onDelete: Cascade) 
+  tradeId         String            @unique
+  accountDetails  Json      
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Payment {
+  id              String            @id @default(uuid())
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade) 
+  userId          String  
+  trade           Trade             @relation(fields: [tradeId], references: [id], onDelete: Cascade) 
+  tradeId         String            @unique
+  amount          Float
+  redemptionCode  String?
+  status          PaymentStatus     @default(PENDING)
+  category        String?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
@@ -134,8 +165,6 @@ model Notification {
   updatedAt       DateTime          @updatedAt
 }
 
-
-
 model Escrow {
   id                String          @id @default(uuid())
   user              User            @relation(fields: [userId], references: [id],  onDelete: Cascade) 
@@ -144,6 +173,7 @@ model Escrow {
   tradeId           String          @unique
   amount            Float
   status            EscrowStatus   @default(PENDING)
+  transactionIds    Transaction[]
   createdAt         DateTime       @default(now())
   updatedAt         DateTime        @updatedAt
 }
@@ -230,6 +260,13 @@ enum DisputeStatus {
   PENDING
   RESOLVED
 }
+
+enum PaymentStatus {
+  PENDING
+  PAID
+}
+
+
 
 
 

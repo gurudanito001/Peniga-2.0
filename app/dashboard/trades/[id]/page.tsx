@@ -4,16 +4,15 @@ import { TransactionCard } from '@/app/ui/listItems';
 import { ArrowLongRightIcon, ArrowDownLeftIcon, ArrowRightIcon, PhotoIcon, PaperAirplaneIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import ModalTemplate from '@/app/ui/dashboard/modalTemplate';
 import ChatSection from './chatSection';
-import { getTradeById, getUser } from '@/app/lib/data';
+import { getTradeById, getMessages, getUserByEmail, getTempAccount } from '@/app/lib/data';
 import { auth } from '@/auth';
-import { getUserByEmail } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import formatAsCurrency from '@/app/lib/formatAsCurrency';
 import moment from 'moment';
 import { acceptTrade } from '@/app/lib/actions';
-import { getMessages } from '@/app/lib/data';
 import Image from 'next/image';
+import EscrowModal from './escrowModal';
 
 
 
@@ -27,10 +26,26 @@ export const metadata: Metadata = {
 export default async function Page({ params }: any) {
   const session = await auth();
   const user = await getUserByEmail(session?.user?.email);
-
   const trade = await getTradeById(params?.id);
+  const tempAccount = await getTempAccount(params?.id);
   const messages = await getMessages(params?.id);
   console.log(messages);
+
+
+  const deriveEscrowPaymentDetails = ()=>{
+    let details = {
+      totalEscrowPayment: 0, 
+      expectedAmount: (trade?.rate && trade?.valueInUSD) ? (trade?.rate * trade?.valueInUSD) : 0, 
+      balance: (trade?.rate && trade?.valueInUSD) ? (trade?.rate * trade?.valueInUSD) : 0
+    };
+    if(trade && trade?.escrow){
+      details.totalEscrowPayment = trade?.escrow?.amount,
+      details.expectedAmount = trade?.rate * trade?.valueInUSD,
+      details.balance = (trade?.rate * trade?.valueInUSD) - (trade?.escrow?.amount || 0) 
+    }
+    console.log("escrowPaymentDetails", details)
+    return details
+  }
   return (
     <>
 
@@ -164,9 +179,6 @@ export default async function Page({ params }: any) {
                   <p className="text-xs text-base-content opacity-60">{moment(trade?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
                 </dd>
               </div>
-
-
-
             </dl>
           </section>
 
@@ -176,7 +188,7 @@ export default async function Page({ params }: any) {
                 modalId='acceptTradeModal'
                 heading='Accept Trade Request'
                 description='Are you sure you want to accept this trade request'
-                btnClasses='bg-green-700 shadow-lg  hover:bg-green-800 hover:shadow-none glass px-12 md:px-20'
+                btnClasses='btn text-white rounded-lg bg-green-700 shadow-lg  hover:bg-green-800 hover:shadow-none glass px-12 md:px-20'
                 btnText="Accept"
                 onSubmit={acceptTrade}
                 id={trade?.id}
@@ -186,48 +198,23 @@ export default async function Page({ params }: any) {
                 modalId='declineTradeModal'
                 heading='Decline Trade Request'
                 description='Are you sure you want to decline this trade request'
-                btnClasses='bg-yellow-600 shadow-lg hover:bg-yellow-700 hover:shadow-none glass px-12 md:px-20 ml-auto'
+                btnClasses='btn text-white rounded-lg bg-yellow-600 shadow-lg hover:bg-yellow-700 hover:shadow-none glass px-12 md:px-20 ml-auto'
                 btnText="Decline"
                 onSubmit={acceptTrade}
                 id={trade?.id}
               />
             </section>}
 
-
-          {(trade?.status === "ACCEPTED") &&
-            <section className='bg-neutral max-w-xl p-3 md:p-5 mb-5 rounded-lg mt-5 flex items-center'>
-              {trade?.buyerId === user?.id &&
-                <ModalTemplate
-                  modalId='completeTradeModal'
-                  heading='Complete Trade'
-                  description='Make sure you have confirmed that the giftcard is valid. This action will conclude this trade and send funds to the seller'
-                  btnClasses='bg-green-700 shadow-lg  hover:bg-green-800 hover:shadow-none glass px-12 md:px-20'
-                  btnText="Complete"
-                  id={trade?.id}
-                />
-              }
-
-              {trade?.sellerId === user?.id &&
-                <ModalTemplate
-                  modalId='cancelTradeModal'
-                  heading='Cancel Trade'
-                  description='Make sure you have not send giftcard. '
-                  btnClasses='bg-yellow-600 shadow-lg hover:bg-yellow-700 hover:shadow-none glass px-12 md:px-20'
-                  btnText="Cancel"
-                  id={trade?.id}
-                />
-              }
-            </section>
-          }
         </section>
 
 
         <aside className='hidden lg:block lg:w-2/5 border border-purple-100 rounded-lg text-base-content bg-purple-50'>
-          {((trade?.status === "ACCEPTED" || trade?.status === "DISPUTED") && trade?.escrow?.id ) &&
+          {((trade?.status === "ACCEPTED" || trade?.status === "DISPUTED") && (deriveEscrowPaymentDetails().balance <= 0) ) &&
             <ChatSection trade={trade} userId={user?.id} messages={messages} />
           }
         </aside>
-
+        { deriveEscrowPaymentDetails().balance > 0 && 
+        <EscrowModal userType={trade?.buyerId === user?.id ? "buyer" : "seller"} user={trade?.buyerId === user?.id ? trade?.buyer : trade?.seller} trade={trade} tempAccount={tempAccount} escrowPaymentDetails={deriveEscrowPaymentDetails()} />}
       </div>
 
     </>

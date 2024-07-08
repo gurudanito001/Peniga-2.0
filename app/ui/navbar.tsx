@@ -45,6 +45,7 @@ const NavBar = async () => {
               </div>
             </label>
           </div>
+          
           <div className="drawer-side z-30">
             <label htmlFor="notification-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
             <div className="menu p-4 w-[350px] lg:w-[400px] min-h-full flex flex-col text-base-content rounded-xl bg-base">

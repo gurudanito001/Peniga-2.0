@@ -10,14 +10,15 @@ import { prisma } from "@/app/lib/prisma";
 import { auth } from "@/auth";
 import { getUserByEmail } from "./data";
 import axios from "axios";
-import { getWalletBalance } from "./data";
 import generateRandomId from "./generateRandomId";
 import type { Trade } from ".prisma/client";
-import { getUserBalance } from "./data";
 import { put } from '@vercel/blob';
 
+const Flutterwave = require('flutterwave-node-v3');
+const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
-const getAccessToken = async () => {
+
+/* const getAccessToken = async () => {
   const res = await axios({
     method: 'post',
     url: "https://sandbox.monnify.com/api/v1/auth/login",
@@ -29,7 +30,7 @@ const getAccessToken = async () => {
   })
   console.log(res.data)
   return res.data.responseBody.accessToken
-}
+} */
 
 export async function postImage(file: any, fileName: any) {
   const blob = await put(fileName, file, {
@@ -72,10 +73,10 @@ export async function authenticate(
   const {email, password} = validatedLoginFields.data
 
   try {
-    await prisma.user.update({
+    /* await prisma.user.update({
       where: {email: "daniel.marlayer@gmail.com"},
       data: {role: "SUPERADMIN"}
-    })
+    }) */
     await signIn('credentials', {email, password});
     
   } catch (error) {
@@ -189,7 +190,7 @@ export async function register(
 
 
 // ---------------------------------------------- CREATE WALLET -------------------------------------
-const CreateWalletFormSchema = z.object({
+/* const CreateWalletFormSchema = z.object({
   bvn: z.string(),
   bvnDateOfBirth: z.string(),
 });
@@ -201,9 +202,9 @@ export type WalletErrorState = {
     bvnDateOfBirth?: string[];
   };
   message?: {severity: string, message: string}
-};
+}; */
 
-export async function createWallet( prevState: WalletErrorState, formData: FormData) {
+/* export async function createWallet( prevState: WalletErrorState, formData: FormData) {
   console.log(formData);
   
   const validatedFields = CreateWalletFormSchema.safeParse({
@@ -274,10 +275,10 @@ export async function createWallet( prevState: WalletErrorState, formData: FormD
     }
   }
   
-}
+} */
 
 
-export async function toggleShowBalance(userId: string){
+/* export async function toggleShowBalance(userId: string){
   try {
     let showBalance: boolean;
   const wallet = await prisma.wallet.findFirst({
@@ -292,10 +293,10 @@ export async function toggleShowBalance(userId: string){
   } catch (error) {
     console.log(error)
   }
-}
+} */
 
 
-export async function validateBankAccount(data: {accountNumber: string, bankCode: string} ) {
+/* export async function validateBankAccount(data: {accountNumber: string, bankCode: string} ) {
   try {
     let accessToken = await getAccessToken();
     const res = await axios({
@@ -318,10 +319,10 @@ export async function validateBankAccount(data: {accountNumber: string, bankCode
       throw new Error("Oops!! Something went wrong");
     }
   }
-}
+} */
 
 
-export async function initiateTransfer(data: {amount: string, bankCode: string, accountNumber: string, narration: string} ) {
+/* export async function initiateTransfer(data: {amount: string, bankCode: string, accountNumber: string, narration: string} ) {
   
   try {
     const session = await auth();
@@ -358,11 +359,11 @@ export async function initiateTransfer(data: {amount: string, bankCode: string, 
       throw new Error("Oops!! Something went wrong");
     }
   }
-}
+} */
 
 
 
-export async function authorizeTransaction(data: {reference: string, authorizationCode: string} ) {
+/* export async function authorizeTransaction(data: {reference: string, authorizationCode: string} ) {
   
   try {
     const session = await auth();
@@ -394,7 +395,7 @@ export async function authorizeTransaction(data: {reference: string, authorizati
       throw new Error("Oops!! Something went wrong");
     }
   }
-}
+} */
 
 
 
@@ -626,50 +627,12 @@ export async function createTrade(data: any) {
 
 export async function acceptTrade(tradeId: any) {
   try {
-      const trade = await prisma.trade.findFirst({
-        where: {id: tradeId}
-      })
-      const buyerWalletBalance = await getUserBalance(trade?.buyerId);
-      if(!buyerWalletBalance || !trade){
-        throw new Error("failed to accept trade")
-      }
-      if(buyerWalletBalance?.availableBalance > (trade?.rate * trade?.valueInUSD)){
-        await prisma.trade.update({
-          where: {id: tradeId},
-          data: {status: "ACCEPTED"}
-        })
-
-        /* await prisma.escrow.create({
-          data: {
-            userId: trade?.buyerId,
-            tradeId: trade?.id,
-            amount: (trade?.rate * trade?.valueInUSD)
-          }
-        }) */
-      }
-      
-      revalidatePath(`/dashboard/trades/${tradeId}`)
-      return {
-        message: {
-          severity: "success",
-          message: 'Trade accepted successfully',
-        },
-        data: trade
-      }
-  } catch (error) {
-    throw new Error("failed to accept trade")
-  }
-}
-
-export async function declineTrade(tradeId: any) {
-  
-  const trade = await prisma.trade.findFirst({
-    where: {id: tradeId}
-  })
-  try {
+    const trade = await prisma.trade.findFirst({
+      where: { id: tradeId }
+    })
     await prisma.trade.update({
-      where: {id: tradeId},
-      data: {status: "ACCEPTED"}
+      where: { id: tradeId },
+      data: { status: "ACCEPTED"}
     })
     revalidatePath(`/dashboard/trades/${tradeId}`)
     return {
@@ -684,9 +647,111 @@ export async function declineTrade(tradeId: any) {
   }
 }
 
+export async function declineTrade(tradeId: any) {
+  const trade = await prisma.trade.findFirst({
+    where: {id: tradeId}
+  })
+  try {
+    await prisma.trade.update({
+      where: {id: tradeId},
+      data: {status: "DECLINED"}
+    })
+    revalidatePath(`/dashboard/trades/${tradeId}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Trade accepted successfully',
+      },
+      data: trade
+    }
+  } catch (error) {
+    throw new Error("failed to decline trade")
+  }
+}
 
-export async function sentGiftCard(tradeId: string) {
-  
+export async function cancelTrade(tradeId: string | undefined) {
+  try {
+    const trade = await prisma.trade.findFirst({
+      where: {id: tradeId}
+    })
+    await prisma.trade.update({
+      where: {id: tradeId},
+      data: {status: "CANCELLED"}
+    })
+    if(trade){
+      await prisma.payment.create({
+        data: {
+          userId: trade.buyerId,
+          tradeId: trade?.id,
+          amount: (trade?.valueInUSD ? (trade?.valueInUSD * trade?.rate) : 0),
+          category: "Seller Cancelled. Refund to buyer"
+        }
+      })
+    }
+    await prisma.message.create({
+      data: {
+        message: `Seller has cancelled trade`,
+        appMessage: true,
+        resourceId: tradeId
+      }
+    })
+    
+    revalidatePath(`/dashboard/trades/${tradeId}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Trade cancelled successfully',
+      }
+    }
+  } catch (error) {
+    throw new Error("failed to cancel trade")
+  }
+}
+
+export async function confirmTrade(tradeId: string | undefined) {
+  try {
+    const trade = await prisma.trade.findFirst({
+      where: {id: tradeId}
+    })
+    // set trade status to successful
+    await prisma.trade.update({
+      where: {id: tradeId},
+      data: {status: "SUCCESSFUL"}
+    })
+    if(trade){
+      // create a payment for the seller
+      await prisma.payment.create({
+        data: {
+          userId: trade.sellerId,
+          tradeId: trade?.id,
+          amount: (trade?.valueInUSD ? (trade?.valueInUSD * trade?.rate) : 0),
+          category: "Payment for successful trade"
+        }
+      })
+    }
+    // send app message that buyer has confirmed trade
+    await prisma.message.create({
+      data: {
+        message: `Buyer has confirmed trade`,
+        appMessage: true,
+        resourceId: tradeId
+      }
+    })
+    
+    revalidatePath(`/dashboard/trades/${tradeId}`)
+    return {
+      message: {
+        severity: "success",
+        message: 'Trade confirmed successfully',
+      }
+    }
+  } catch (error) {
+    throw new Error("failed to confirm trade")
+  }
+}
+
+
+export async function sentGiftCard(tradeId: string | undefined) {
   try {
     const trade = await prisma.trade.update({
       where: {id: tradeId},
@@ -707,13 +772,95 @@ export async function sentGiftCard(tradeId: string) {
       message: {
         severity: "success",
         message: 'Trade updated successfully',
-      },
-      data: trade
+      }
     }
   } catch (error) {
     throw new Error("failed to update trade")
   }
 }
+
+// ---------------------------------------------------------- TRANSACTIONS --------------------------------------------------------
+
+export const getTransferFee = async ({ amount }: { amount: number }) => {
+  try {
+    const details = {
+      "amount": amount,
+      "currency": "NGN",
+    };
+    const response = await flw.Transfer.fee(details)
+    return response
+
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
+export const generateTempAccount = async ({ email, tradeId, amount }: { email: string, tradeId: string, amount: number }) => {
+  try {
+    const details = {
+      "email": email,
+      "amount": amount,
+      "is_permanent": false,
+      "frequency": "3",
+      "tx_ref": tradeId,
+      "narration": "Peniga Escrow Account"
+    };
+    const tempAccountDetails = await flw.VirtualAcct.create(details)
+    const transferFeeDetials = await getTransferFee({amount: amount})
+    console.log(tempAccountDetails.data, transferFeeDetials.data)
+    tempAccountDetails.data = {...tempAccountDetails.data, fee: transferFeeDetials.data[0].fee}
+    await prisma.tempAccount.create({
+      data: {
+        tradeId: tradeId,
+        accountDetails: tempAccountDetails?.data,
+      }
+    })
+    
+    revalidatePath(`/dashboard/trades/${tradeId}`)
+    return tempAccountDetails.data
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+export const mockTransfer = async ({ amount }: { amount: number }) => {
+  try {
+    const Flutterwave = require('flutterwave-node-v3');
+    const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
+    const details = {
+      account_bank: "flutterwave",
+      account_number: "99992069",
+      amount: 500,
+      currency: "NGN",
+      debit_currency: "NGN"
+  };
+    flw.Transfer.initiate(details)
+      .then((res: any) =>{
+        console.log("transfer response", res)
+        return res
+      })
+      .catch((error: any) =>{
+        console.log(error)
+      });
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
+// ----------------------------------------------------------ESCROW --------------------------------------------------------
+
+/* export const createEscrow = async({userId, tradeId, amount}: {userId: string | undefined, tradeId: string | undefined, amount: number}) =>{
+  const escrow = await prisma.escrow.create({
+    data: {
+      userId, tradeId, amount
+    }
+  })
+  return escrow;
+} */
 
 
 
@@ -847,7 +994,19 @@ export async function refundBuyer(tradeId: any) {
     where: {id: trade?.buyerId}
   })
   try {
-    // credit buyer wallet here
+    // create a payment for the buyer
+    if(trade){
+      await prisma.payment.create({
+        data: {
+          userId: trade?.buyerId,
+          tradeId: trade?.id,
+          amount: (trade?.valueInUSD ? (trade?.valueInUSD * trade?.rate) : 0),
+          category: "Buyer refunded after winning dispute"
+        }
+      })
+    }
+    
+    // set dispute status to RESOLVED
     await prisma.dispute.update({
       where: {id: dispute?.id},
       data: {
@@ -861,7 +1020,7 @@ export async function refundBuyer(tradeId: any) {
         appMessage: true,
         resourceId: tradeId,
         resourceUrl: `/dashboard/trades/${tradeId}`,
-        message: `Buyer (${buyer?.firstName} ${buyer?.lastName}) has been declared winner of the dispute`
+        message: `Admin has ruled in favour of Buyer (${buyer?.firstName} ${buyer?.lastName})`
       }
     })
     // app Message 2
@@ -899,6 +1058,18 @@ export async function creditSeller(tradeId: any) {
   })
   try {
     // credit seller wallet here
+    if(trade){
+      await prisma.payment.create({
+        data: {
+          userId: trade?.sellerId,
+          tradeId: trade?.id,
+          amount: (trade?.valueInUSD ? (trade?.valueInUSD * trade?.rate) : 0),
+          category: "Seller credited after winning dispute"
+        }
+      })
+    }
+
+    // set dispute status to RESOLVED
     await prisma.dispute.update({
       where: {id: dispute?.id},
       data: {
@@ -912,7 +1083,7 @@ export async function creditSeller(tradeId: any) {
         appMessage: true,
         resourceId: tradeId,
         resourceUrl: `/dashboard/trades/${tradeId}`,
-        message: `Seller (${seller?.firstName} ${seller?.lastName}) has been declared winner of the dispute`
+        message: `Admin has ruled in favour of Seller (${seller?.firstName} ${seller?.lastName})`
       }
     })
     // app Message 2
@@ -1001,139 +1172,3 @@ export async function createMessage(data: any) {
 export async function refreshPage(pathname: string){
   revalidatePath(pathname);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const FormSchema = z.object({
-  id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
-  }),
-  amount: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
-  }),
-  date: z.string(),
-});
-
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-export type State = {
-  errors?: {
-    customerId?: string[];
-    amount?: string[];
-    status?: string[];
-  };
-  message?: string | null;
-};
- 
-export async function createInvoice(prevState: State, formData: FormData) {
-
-  const validatedFields = CreateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
-    };
-  }
-
-  // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0]
-
-  // Insert data into the database
-  try {
-    await sql`
-    INSERT INTO invoices (customer_id, amount, status, date)
-    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-  `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Invoice.',
-    };
-  }
-  
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
-}
-
-
-
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-
-export async function updateInvoice(id: string, prevState: State, formData: FormData) {
-
-  const validatedFields = UpdateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
-    };
-  }
-  
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
- 
-  try {
-    await sql`
-    UPDATE invoices
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-    WHERE id = ${id}
-  `;
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Invoice.',
-    };
-  }
- 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
-}
-
-export async function deleteInvoice(id: string) {
-  try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath('/dashboard/invoices');
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Invoice.',
-    };
-  }
-}
-

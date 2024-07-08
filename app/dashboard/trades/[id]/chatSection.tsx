@@ -1,17 +1,14 @@
 "use client"
 
-import { getMessages } from "@/app/lib/data";
-import { createMessage } from "@/app/lib/actions";
-import { PhotoIcon, PaperAirplaneIcon, XMarkIcon, CheckCircleIcon, ExclamationTriangleIcon, TrashIcon, EllipsisVerticalIcon} from "@heroicons/react/24/outline"
+import { createMessage, sentGiftCard, confirmTrade, cancelTrade } from "@/app/lib/actions";
+import { PhotoIcon, PaperAirplaneIcon, XMarkIcon, CheckCircleIcon, ExclamationTriangleIcon, ExclamationCircleIcon, TrashIcon, EllipsisVerticalIcon} from "@heroicons/react/24/outline"
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import moment from "moment";
-import { refreshPage } from "@/app/lib/actions";
-import { postImage } from "@/app/lib/actions";
 import CreateDisputeForm from "../../disputes/createDisputeForm";
-import { sentGiftCard } from "@/app/lib/actions";
 import ConfirmCardTimer from "./confirmCardTimer";
 import Image from "next/image";
+import ModalTemplate from "@/app/ui/dashboard/modalTemplate";
 
 const ChatSection = ({trade, userId, messages = []}: {trade: any, userId: string | undefined, messages: any[] | undefined}) => {
   const pathname = usePathname();
@@ -240,8 +237,89 @@ const ChatSection = ({trade, userId, messages = []}: {trade: any, userId: string
         <div className="dropdown dropdown-end ml-auto">
           <div tabIndex={0} role="button" className="m-1"> <EllipsisVerticalIcon className="w-7" /></div>
           <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-white w-64">
-            <li ><a className="rounded-lg text-accent font-semibold cursor-pointer" onClick={()=>setShowCreateDisputeForm(true)}>Raise Dispute <ExclamationTriangleIcon className="w-6 ml-auto" /></a></li>
-            {trade?.sellerId === userId && <li ><a className="rounded-lg text-green-700 font-semibold cursor-pointer" onClick={handleSentGiftCard} > I Have Sent Giftcard {isSettingGiftcardSent ? <span className="loading loading-spinner loading-xs ml-auto"></span> : <CheckCircleIcon className="w-6 ml-auto" />}</a></li>}
+            <li>
+              <button disabled={trade?.dispute !== null} className="btn rounded-lg text-accent hover:bg-base-100 font-semibold w-full border-0 bg-white" onClick={()=>setShowCreateDisputeForm(true)}>Raise Dispute <ExclamationTriangleIcon className="w-6 ml-auto" /></button>
+            </li>
+
+
+
+
+            {trade?.sellerId === userId &&
+              <>
+              <li>
+                  <ModalTemplate
+                    modalId='cancelTradeModal'
+                    btnText={
+                      <>
+                        <span>Cancel Trade</span> <ExclamationTriangleIcon className="w-6 ml-auto" />
+                      </>
+                    }
+                    submitButtonText="Proceed"
+                    heading="Cancel Trade"
+                    description={
+                      <dl className="font-mono text-xs sm:text-sm flex flex-col gap-3 mt-5 ml-0">
+                        <li>This action will end this trade</li>
+                        <li>Money in Escrow will be refunded to the buyer</li>
+                        <li className="text-accent font-semibold">This action cannot be reversed</li>
+                      </dl>
+                    }
+                    btnClasses='btn w-full border-0 bg-white hover:bg-base-100 rounded-lg text-warning font-semibold'
+                    id={trade?.id}
+                    onSubmit={cancelTrade}
+                  />
+                </li>
+
+                <li>
+                  <ModalTemplate
+                    modalId='sentGiftcardModal'
+                    btnText={
+                      <>
+                        <span>I Have Sent Giftcard</span> <CheckCircleIcon className="w-6 ml-auto" />
+                      </>
+                    }
+                    submitButtonText="Proceed"
+                    heading="I Have Sent Giftcard"
+                    description={
+                      <dl className="font-mono text-xs sm:text-sm flex flex-col gap-3 mt-5 ml-0">
+                        <li>This action will start a countdown of 3hrs for Buyer to confirm Giftcard</li>
+                        <li>After buyer confirms giftcard, you will receive your payment</li>
+                        <li className="text-accent font-semibold">Make sure you have sent giftcard in the chat before you confirm Giftcard</li>
+                      </dl>
+                    }
+                    btnClasses='btn w-full border-0 bg-white hover:bg-base-100 rounded-lg text-success font-semibold'
+                    id={trade?.id}
+                    onSubmit={sentGiftCard}
+                  />
+                </li>
+                
+              </>
+            }
+
+            {trade?.buyerId === userId &&
+              <>
+                <li>
+                  <ModalTemplate
+                    modalId='confirmedGiftcardModal'
+                    btnText={
+                      <>
+                        <span>Confirm Giftcard</span> <CheckCircleIcon className="w-6 ml-auto" />
+                      </>
+                    }
+                    submitButtonText="Proceed"
+                    heading="Confirm Giftcard"
+                    description={
+                      <dl className="font-mono text-xs sm:text-sm flex flex-col gap-3 mt-5 ml-0">
+                        <dt>You are about to confirm that giftcard was valid</dt>
+                        <dt>Seller will receive payment after you confirm</dt>
+                      </dl>
+                    }
+                    btnClasses='btn w-full border-0 bg-white hover:bg-base-100 rounded-lg text-success font-semibold'
+                    id={trade?.id}
+                    onSubmit={confirmTrade}
+                  />
+                </li>
+              </>
+            }
           </ul>
         </div>}
 
@@ -298,8 +376,6 @@ const ChatSection = ({trade, userId, messages = []}: {trade: any, userId: string
             }
           </>
         }
-        
-        
       </section>
       
       

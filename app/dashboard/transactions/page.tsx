@@ -6,7 +6,7 @@ import { TransactionCard } from '@/app/ui/listItems';
 import { ArrowUpRightIcon, ArrowDownLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { auth } from '@/auth';
 import { getUserByEmail } from '@/app/lib/data';
-import { fetchTransactions } from '@/app/lib/data';
+import { getAllTransactions } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import formatAsCurrency from '@/app/lib/formatAsCurrency';
@@ -21,7 +21,8 @@ export const metadata: Metadata = {
 export default async function Page() {
   const sesssion = await auth();
   const user = await getUserByEmail(sesssion?.user?.email);
-  const transactions = await fetchTransactions({ accountNuber: user?.wallet?.walletData?.accountNumber })
+  const transactions = await getAllTransactions({ userId: user?.id })
+  console.log(transactions);
   return (
     <>
       <div className='hidden md:flex md:flex-col grow h-auto overflow-hidden'>
@@ -43,16 +44,16 @@ export default async function Page() {
               </tr>
             </thead>
             <tbody className='text-gray-950'>
-              {transactions?.content.map((item: any) => {
+              {transactions?.map((item) => {
                 return (
-                  <tr key={item?.walletTransactionReference}>
+                  <tr key={item?.id}>
                     <td>
                       <button className="flex align-middle btn btn-circle btn-sm w-10 h-10 bg-base text-error">
-                        {item?.transactionType === "DEBIT" && <ArrowUpRightIcon className="w-4" />}
-                        {item?.transactionType === "CREDIT" && <ArrowDownLeftIcon className="w-4" />}
+                        {item?.type === "DEBIT" && <ArrowUpRightIcon className="w-4" />}
+                        {item?.type === "CREDIT" && <ArrowDownLeftIcon className="w-4" />}
                       </button>
                     </td>
-                    <td className="text-base-content font-semibold mb-1">Fund Transfer</td>
+                    <td className="text-base-content font-semibold mb-1">{item?.category}</td>
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="avatar">
@@ -77,11 +78,11 @@ export default async function Page() {
                     </td>
                     <td>
                       <span className="badge badge-ghost badge-success text-xs mb-1 text-success">{item?.status}</span>
-                      <p className="text-xs text-base-content opacity-60">{moment(item?.transactionDate).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                      <p className="text-xs text-base-content opacity-60">{moment(item?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
                     </td>
                     <td className={`${lusitana.className} text-base-content font-bold text-lg`}>₦{formatAsCurrency(item?.amount)}</td>
                     <th>
-                      <Link href="/dashboard/transactions/1" className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
+                      <Link href={`/dashboard/transactions/${item?.id}`} className="flex items-center text-accent p-2">view <ArrowRightIcon className='w-3 ml-2' /> </Link>
                     </th>
                   </tr>
                 )

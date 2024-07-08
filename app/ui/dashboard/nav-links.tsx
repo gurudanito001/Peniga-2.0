@@ -9,7 +9,8 @@ import {
   UserIcon,
   ArrowsPointingInIcon,
   HandThumbDownIcon,
-  CreditCardIcon
+  BanknotesIcon,
+  
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -26,7 +27,7 @@ const userLinks = [
   { name: 'Trades', href: '/dashboard/trades', baseHref: "/dashboard/trades", icon: ArrowsRightLeftIcon },
   { name: 'Escrows', href: '/dashboard/escrows', baseHref: "/dashboard/escrows", icon: FolderMinusIcon },
   { name: 'Transactions', href: '/dashboard/transactions', baseHref: "/dashboard/transactions", icon: ArrowsUpDownIcon },
-  { name: 'Benificiaries', href: '/dashboard/beneficiaries', baseHref: "/dashboard/beneficiaries", icon: CreditCardIcon },
+  { name: 'Payments', href: '/dashboard/payments', baseHref: "/dashboard/payments", icon: BanknotesIcon }
 ];
 
 const adminLinks = [
@@ -37,6 +38,7 @@ const adminLinks = [
   { name: 'Escrows', href: '/dashboard/escrows', baseHref: "/dashboard/escrows", icon: FolderMinusIcon },
   { name: 'Disputes', href: '/dashboard/disputes', baseHref: "/dashboard/disputes", icon: HandThumbDownIcon },
   { name: 'Transactions', href: '/dashboard/transactions', baseHref: "/dashboard/transactions", icon: ArrowsUpDownIcon },
+  { name: 'Payments', href: '/dashboard/payments', baseHref: "/dashboard/payments", icon: BanknotesIcon }
 ];
 
 export default function NavLinks({ role = "USER" }) {

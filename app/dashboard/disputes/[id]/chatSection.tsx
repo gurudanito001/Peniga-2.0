@@ -186,7 +186,7 @@ const ChatSection = ({dispute, trade, messages = []}: {dispute: any, trade: any,
       }else if(item?.senderId === trade?.sellerId){
         return(
           <div className="chat chat-end" key={item?.id}>
-            <div className="chat-bubble bg-white text-base-content text-sm flex items-center font-semibold">
+            <div className="chat-bubble bg-accent text-white text-sm flex items-center font-semibold">
               {item?.message.includes("public.blob.vercel-storage.com") ?
               <Image src={item?.message} className='max-h-40' width={200} height={160} style={{width: "200px", height: "160px", objectFit: "contain" }} alt='Preview file'  onClick={()=>openImagePreview(item?.message)} /> :
               item?.message
@@ -240,7 +240,7 @@ const ChatSection = ({dispute, trade, messages = []}: {dispute: any, trade: any,
 
         <div className="ml-auto">
           <h6 className="font-bold mb-1">Seller </h6>
-          <div className="flex items-center gap-3 bg-gray-100 p-2 text-gray-900 rounded-lg">
+          <div className="flex items-center gap-3 bg-accent p-2 text-white rounded-lg">
             <div className="avatar">
               <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
             </div>
@@ -309,7 +309,7 @@ const ChatSection = ({dispute, trade, messages = []}: {dispute: any, trade: any,
             modalId='refundBuyerModal'
             heading='Refund Buyer'
             description='This action will send the funds in escrow back to the buyer.'
-            btnClasses='bg-green-700 shadow-lg  hover:bg-green-800 hover:shadow-none glass px-12 md:px-20'
+            btnClasses='btn text-white rounded-lg bg-primary shadow-lg hover:bg-primary hover:shadow-none glass px-12 md:px-20'
             btnText="Refund Buyer"
             onSubmit={refundBuyer}
             id={trade?.id}
@@ -319,7 +319,7 @@ const ChatSection = ({dispute, trade, messages = []}: {dispute: any, trade: any,
             modalId='creditSellerModal'
             heading='Credit Seller'
             description='This action will send the funds in escrow to the seller.'
-            btnClasses='bg-yellow-600 shadow-lg hover:bg-yellow-700 hover:shadow-none glass px-12 md:px-20 ml-auto'
+            btnClasses='btn text-white rounded-lg bg-accent shadow-lg hover:bg-gray-500 hover:shadow-none glass px-12 md:px-20 ml-auto'
             btnText="Credit Seller"
             onSubmit={creditSeller}
             id={trade?.id}

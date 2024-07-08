@@ -35,7 +35,7 @@ export default async function Page() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Seller</th>
+                <th>User</th>
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Date Created</th>
@@ -53,8 +53,8 @@ export default async function Page() {
                           <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                         </div>
                         <div>
-                          <div className="font-bold capitalize">{item?.trade?.seller?.firstName} {item?.trade?.seller?.lastName}</div>
-                          <div className="text-xs opacity-50">{item?.trade?.seller?.username || item?.trade?.seller?.email}</div>
+                          <div className="font-bold capitalize">{item?.user?.firstName} {item?.user?.lastName}</div>
+                          <div className="text-xs opacity-50">{item?.user?.username || item?.user?.email}</div>
                         </div>
                       </div>
                     </td>

@@ -11,7 +11,7 @@ import { TransactionCard } from '@/app/ui/listItems';
 import { ArrowUpRightIcon, ArrowDownLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import CreateWallet from './createWallet';
 import { auth } from '@/auth';
-import { getUserByEmail, fetchTransactions } from '@/app/lib/data';
+import { getUserByEmail } from '@/app/lib/data';
 import type { User } from '@prisma/client';
 import moment from 'moment';
 import { Metadata } from 'next';
@@ -35,7 +35,7 @@ export default async function Page({searchParams}: {searchParams: {tab: string}}
         <h1 className={`${lusitana.className} hidden lg:block mb-4 text-base-content text-2xl font-bold`}>
           Dashboard
         </h1>
-        {user?.role !== "ADMIN" && <WalletCard />}
+        {/* {user?.role !== "ADMIN" && <WalletCard />} */}
         <Tabs tabItems={["transactions", "escrows", "trades"]} />
 
         {searchParams?.tab === "transactions" && <Transactions />}

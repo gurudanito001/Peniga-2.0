@@ -43,15 +43,15 @@ export default async function Page({params}: {params: {id: string}}) {
 
 
               <div className='flex items-center border-b py-3'>
-                <dt className='font-medium text-base-content text-sm'>Seller</dt>
+                <dt className='font-medium text-base-content text-sm'>User</dt>
                 <dd className='ml-auto'>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
                       <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                     </div>
                     <div>
-                      <div className="font-bold">{escrow?.trade?.seller?.firstName} {escrow?.trade?.seller?.lastName}</div>
-                      <div className="text-xs opacity-50">{escrow?.trade?.seller?.username || escrow?.trade?.seller?.email}</div>
+                      <div className="font-bold">{escrow?.user?.firstName} {escrow?.user?.lastName}</div>
+                      <div className="text-xs opacity-50">{escrow?.user?.username || escrow?.user?.email}</div>
                     </div>
                   </div>
                 </dd>

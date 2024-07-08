@@ -4,13 +4,11 @@ import {
   XMarkIcon, HomeModernIcon, IdentificationIcon, BanknotesIcon, ExclamationTriangleIcon, CheckCircleIcon
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { validateBankAccount } from "@/app/lib/actions";
-import { initiateTransfer } from "@/app/lib/actions";
 import ReactCodeInput from "react-code-input";
 import formatAsCurrency from "@/app/lib/formatAsCurrency";
-import { authorizeTransaction } from "@/app/lib/actions";
+import { verifyBankAccount } from "@/app/lib/data";
 
-const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string }) => {
+const TransferFundsForm = ({ banks = [] }: { banks: any[] }) => {
   const [formData, setFormData] = useState({
     accountNumber: "",
     bankCode: "",
@@ -49,19 +47,19 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
   const [authorizingTransfer, setAuthorizingTransfer] = useState(false);
 
   useEffect(() => {
-    if (formData?.bankCode && formData.accountNumber.length === 10) {
+    if (formData.accountNumber.length === 10) {
       console.log(formData);
       setValidatingAccount(true);
       setErrorMessage("");
       setSuccessMessage("");
-      validateBankAccount(formData).then(res => {
+      verifyBankAccount({account_number: formData?.accountNumber, account_bank: formData?.bankCode}).then((res: any) => {
         console.log(res)
         setFormData(prevState => ({
           ...prevState,
           accountName: res.accountName
         }))
         setValidatingAccount(false);
-      }).catch(error => {
+      }).catch((error: any) => {
         console.log(error.message)
         setErrorMessage(error.message)
         setValidatingAccount(false);
@@ -77,43 +75,8 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
   }
 
   const handleSubmit = () => {
-    console.log(formData);
-    setSendingTransfer(true);
-    initiateTransfer(formData).then(res => {
-      console.log(res)
-      setTransferResponse(res);
-      setSendingTransfer(false);
-      setAuthorizationData( prevState =>({
-        ...prevState,
-        reference: res.reference
-      }))
-    }).catch(error => {
-      console.log(error.message)
-      setErrorMessage(error.message)
-      setSendingTransfer(false);
-    })
+    return console.log(formData);
   }
-
-  const authorize = () => {
-    setAuthorizingTransfer(true);
-    authorizeTransaction(authorizationData).then( res =>{
-      console.log(res)
-      setSuccessResponse(res);
-      setAuthorizingTransfer(false);
-      setSuccessMessage("Transfer was successful");
-    }).catch(error =>{
-      console.log(error.message)
-      setErrorMessage(error.message)
-      setAuthorizingTransfer(false);
-    })
-  }
-
-  useEffect(()=>{
-    if(authorizationData?.authorizationCode?.length === 6){
-      authorize()
-    }
-  }, [authorizationData?.authorizationCode])
-  
   return (
     <>
       {successMessage &&
@@ -128,6 +91,8 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
           <span>{errorMessage}</span>
           <button className="btn btn-xs btn-circle bg-transparent border-none" onClick={() => setErrorMessage("")}> <XMarkIcon className="w-4" /> </button>
         </div>}
+
+        
       {!transferResponse?.reference &&
         <form>
           <h6 className='font-semibold text-sm text-base-content'>Bank name</h6>
@@ -170,8 +135,7 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
         <section>
           {!successResponse?.reference &&
             <>
-              <h6 className="font-semibold mb-1">Authorize Transaction</h6>
-              <p className=" text-gray-500">A 6-digit pin was sent to <strong>{email}</strong></p>
+              <h6 className="font-semibold mb-1">Enter Payment OTP</h6>
             </>}
           <div className="card w-full bg-base-100 shadow-lg mt-3 rounded-lg">
             <div className="card-body p-4">
@@ -199,29 +163,6 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
                 <span className="text-xs">Transaction Fee</span>
                 <span className="ml-auto font-semibold">₦{formatAsCurrency(transferResponse?.totalFee)}</span>
               </p>
-
-              {successResponse?.reference && 
-              <>
-                <p className="flex items-center border-b py-3">
-                  <span className="text-xs">Reference</span>
-                  <span className="ml-auto font-semibold">{successResponse?.reference}</span>
-                </p>
-                <p className="flex items-center border-b py-3">
-                  <span className="text-xs">Date</span>
-                  <span className="ml-auto font-semibold">{successResponse?.dateCreated}</span>
-                </p>
-
-                <button  type="button" onClick={handleSubmit} className={`btn text-white rounded-lg bg-primary shadow-lg  hover:bg-purple-800 hover:shadow-none glass px-12 md:px-20 w-full mt-12`} >Share Receipt </button>
-              </>}
-              
-
-              {successResponse?.reference === "" && 
-              <>
-                <p className="flex items-center border py-5 px-4 mt-4 rounded-lg">
-                  <span className="text-xs">Balance:</span>
-                  <span className="ml-2 font-semibold">₦{formatAsCurrency(transferResponse?.availableBalance)}</span>
-                  <span className="ml-3 text-red-600">{transferResponse?.availableBalance < (transferResponse?.amount + transferResponse?.totalFee) && "(Insufficient Balance)"}</span>
-                </p>
 
                 <h6 className="text-center mt-5">Enter OTP to Authorize {authorizingTransfer && <span className="loading loading-spinner loading-xs ml-2"></span>}</h6>
                 <div className="flex">
@@ -259,9 +200,6 @@ const TransferFundsForm = ({ banks = [], email }: { banks: any[], email: string 
                     }}
                   />
                 </div>
-              </>}
-
-
             </div>
           </div>
         </section>}

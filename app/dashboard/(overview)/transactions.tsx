@@ -11,20 +11,22 @@ import { TransactionCard } from '@/app/ui/listItems';
 import { ArrowUpRightIcon, ArrowDownLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import CreateWallet from './createWallet';
 import { auth } from '@/auth';
-import { getUserByEmail, fetchTransactions, fetchAllTransactions } from '@/app/lib/data';
+import { getUserByEmail, getAllTransactions } from '@/app/lib/data';
 import type { User } from '@prisma/client';
 import moment from 'moment';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import formatAsCurrency from '@/app/lib/formatAsCurrency';
+import Image from 'next/image';
 
 const Transactions = async()=>{
   const sesssion = await auth();
   const user = await getUserByEmail(sesssion?.user?.email);
-  const transactions = user?.role === "USER" ? 
+  const transactions = await getAllTransactions({userId: user?.id});
+  /* const transactions = user?.role === "USER" ? 
   await fetchTransactions({accountNuber: user?.wallet?.walletData?.accountNumber, pageNo: 0, pageSize: 10}) :
-  await fetchAllTransactions({pageNo: 0, pageSize: 20})
-  console.log("all transactions", transactions);
+  await fetchTransactions({pageNo: 0, pageSize: 20})
+  console.log("all transactions", transactions); */
 
 
   return (
@@ -42,21 +44,21 @@ const Transactions = async()=>{
           </tr>
         </thead>
         <tbody className='text-gray-950'>
-          {transactions?.content.map((item: any) => {
+          {transactions?.map((item) => {
             return (
-              <tr key={item?.walletTransactionReference}>
+              <tr key={item?.id}>
                 <td>
                   <button className="flex align-middle btn btn-circle btn-sm w-10 h-10 bg-base text-error">
-                    {item?.transactionType === "DEBIT" && <ArrowUpRightIcon className="w-4" />}
-                    {item?.transactionType === "CREDIT" && <ArrowDownLeftIcon className="w-4" />}
+                    {item?.type === "DEBIT" && <ArrowUpRightIcon className="w-4" />}
+                    {item?.type === "CREDIT" && <ArrowDownLeftIcon className="w-4" />}
                   </button>
                 </td>
                 <td className="text-base-content font-semibold mb-1">Fund Transfer</td>
                 <td>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+                      <div className="w-10 rounded-full">
+                        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                       </div>
                     </div>
                     <div>
@@ -68,8 +70,8 @@ const Transactions = async()=>{
                 <td>
                   <div className="flex items-center gap-3">
                     <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img className='rounded-full' src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt='placeholder user' />
+                      <div className="w-10 rounded-full">
+                        <Image src="/avatar1.png" className='rounded-full' width={40} height={40} style={{ width: "40px", height: "40px", objectFit: "contain" }} alt='avatar' />
                       </div>
                     </div>
                     <div>
@@ -80,7 +82,7 @@ const Transactions = async()=>{
                 </td>
                 <td>
                   <span className="badge badge-ghost badge-success text-xs mb-1 text-success">{item?.status}</span>
-                  <p className="text-xs text-base-content opacity-60">{moment(item?.transactionDate).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                  <p className="text-xs text-base-content opacity-60">{moment(item?.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
                 </td>
                 <td className={`${lusitana.className} text-base-content font-bold text-lg`}>₦{formatAsCurrency(item?.amount)}</td>
                 <th>
